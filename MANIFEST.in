@@ -1,0 +1,3 @@
+include LICENSE
+exclude .gitignore
+exclude addr.csv
