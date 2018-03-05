@@ -106,6 +106,10 @@ SuperMap.area_city_mapper
 SuperMap.rep_areas
 #市到省的映射数据库，字典类型（key为市的名称，value为省的名称）
 SuperMap.city_province_mapper
+#全国省市区的经纬度数据库，字典类型（key为"省,市,区",value为(维度,经度)）
+SuperMap.lat_lon_mapper
+#获取北京市朝阳区的经纬度
+SuperMap.lat_lon_mapper.get("北京市,北京市,朝阳区")
 ```
 
 # 关于匹配与映射的细节
