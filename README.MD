@@ -32,7 +32,6 @@
 
 本模块中最主要的类是chinese_province_city_area_mapper.transformer.CPCATransformer（注：CPCA是Chinese Province City Area的缩写），该类的transform方法可以输入任意的可迭代类型（如list，Series等），然后将其转换为一个DataFrame，示例代码如下：
 
-    from chinese_province_city_area_mapper.transformer import CPCATransformer
     location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
     from chinese_province_city_area_mapper.transformer import CPCATransformer
     cpca = CPCATransformer()
@@ -49,7 +48,6 @@
 
 从上面的程序输出中你会发现朝阳区并没有被映射到北京市，这是因为在中国有多个同名的叫做朝阳区的区，并且他们位于不同的市，所以程序就不知道该映射到哪一个市了，因此就不对其进行映射，如果你确定你的数据中的朝阳区都是指北京市的那个朝阳区的话，可以在CPCATransformer的构造函数中传一个字典（叫做umap参数，是user map的简称），指定朝阳区都要映射到北京市，注意只有区到市的这一级映射存在重名问题，中国的市的名称都是唯一的，省的名称也都是唯一的，示例代码如下：
 
-    from chinese_province_city_area_mapper.transformer import CPCATransformer
     location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
     from chinese_province_city_area_mapper.transformer import CPCATransformer
     cpca = CPCATransformer({"朝阳区":"北京市"})
@@ -65,7 +63,6 @@
 
 模块中还内置了一个我推荐大家使用的umap，这个umap中我根据处理地址数据的经验将那些重名的区映射到了它最常见的一个市，这个umap位于chinese_province_city_area_mapper.myumap.umap，使用如下：
 
-    from chinese_province_city_area_mapper.transformer import CPCATransformer
     location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
     from chinese_province_city_area_mapper.transformer import CPCATransformer
     from chinese_province_city_area_mapper import myumap

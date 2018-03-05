@@ -51,7 +51,8 @@ GitHub: `https://github.com/DQinYuan/chinese_province_city_area_mapper <https://
 ========
 
 代码目前仅仅支持python3
-``pip install chinese_province_city_area_mapper``
+
+    pip install chinese_province_city_area_mapper
 
 Get Started
 ============
@@ -139,7 +140,7 @@ requires = ['pandas(>=0.20.1)',
 
 
 setup(name='chinese_province_city_area_mapper',
-      version='1.6',
+      version='1.8',
       description='Chinese Province, City and Area Recognition Utilities',
       long_description=LONGDOC,
       author='DQinYuan',
