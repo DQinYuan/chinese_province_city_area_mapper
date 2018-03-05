@@ -25,6 +25,7 @@
 
 
 代码目前仅仅支持python3
+
 `pip install chinese_province_city_area_mapper`
 
 # Get Started
