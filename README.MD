@@ -10,7 +10,7 @@
     |上海市|上海市|徐汇区|
     |福建省|泉州市|洛江区|
 
-如果你只是想快速实现以上类型的数据处理的话，那么只需要复制以下代码，不需要过多阅读本文档的内容：
+如果你只是想快速实现以上类型的数据处理的话，那么只需要复制以下代码，不需要过多阅读本文档的内容（复制代码之前，先阅读安装说明将本模块装上）：
 
     location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"] #任意的可迭代类型，比如Series也可以
     from chinese_province_city_area_mapper.transformer import CPCATransformer
@@ -18,6 +18,13 @@
     cpca = CPCATransformer(myumap.umap)
     df = cpca.transform(location_str)
     df
+
+# 安装说明
+
+代码目前仅仅支持python3
+
+`pip install chinese_province_city_area_mapper`
+
 
 # 特点
 
@@ -28,12 +35,7 @@
  - 封装了简单的绘图功能，可以很方便地进行简单的数据可视化
  - MIT 授权协议
 
-# 安装说明
 
-
-代码目前仅仅支持python3
-
-`pip install chinese_province_city_area_mapper`
 
 # Get Started
 
