@@ -133,14 +133,14 @@ draw_locations函数还可以通过指定path参数来改变输出路径，示�
 
 """
 
-requires = ['pandas(>=0.20.1)',  
+requires = ['pandas(>=0.20.0)',  
            'folium(>=0.5.0)',
            'jieba(>=0.39)',
            ]  
 
 
 setup(name='chinese_province_city_area_mapper',
-      version='1.8',
+      version='1.9',
       description='Chinese Province, City and Area Recognition Utilities',
       long_description=LONGDOC,
       author='DQinYuan',
