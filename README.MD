@@ -10,6 +10,15 @@
     |上海市|上海市|徐汇区|
     |福建省|泉州市|洛江区|
 
+如果你只是想快速实现以上类型的数据处理的话，那么只需要复制以下代码，不需要过多阅读本文档的内容：
+
+    location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"] #任意的可迭代类型，比如Series也可以
+    from chinese_province_city_area_mapper.transformer import CPCATransformer
+    from chinese_province_city_area_mapper import myumap
+    cpca = CPCATransformer(myumap.umap)
+    df = cpca.transform(location_str)
+    df
+
 # 特点
 
  - 基于jieba分词进行匹配，同时用比较复杂的匹配逻辑保证了准确率，笔者根据手头的海量地址描述数据进行了测试
@@ -100,7 +109,7 @@ draw_locations函数还可以通过指定path参数来改变输出路径，示�
 from chinese_province_city_area_mapper.infrastructure import SuperMap
 #地区到市的映射数据库，是一个字典类型（key为区名，value为其所属的市名），注意其中包含重复的区名
 SuperMap.area_city_mapper
-#重复的区名列表，列表类型，如果区名在这个列表中，则area_city_mapper的映射是不准确的
+#重复的区名列表，列表类型，如果区名在这个列表中，说明存在多个同名区，则area_city_mapper的映射是不准确的
 SuperMap.rep_areas
 #市到省的映射数据库，字典类型（key为市的名称，value为省的名称）
 SuperMap.city_province_mapper
@@ -108,11 +117,18 @@ SuperMap.city_province_mapper
 SuperMap.lat_lon_mapper
 #获取北京市朝阳区的经纬度
 SuperMap.lat_lon_mapper.get("北京市,北京市,朝阳区")
+#获得一个地名的级别（即省，市或者区）
+SuperMap.getType("江苏省")   #返回"province"，即常量SuperMap.PROVINCE
+SuperMap.getType("南京市")   #返回"city"，即常量SuperMap.CITY
+SuperMap.getType("海淀区")   #返回"area"，即常量SuperMap.AREA
+#省略"省"字也能够识别出来
+SuperMap.getType("江苏")
+
 ```
 
 # 关于匹配与映射的细节
 
-为了保证匹配与映射的正确性，我做了很多细节上的处理。
+为了保证匹配与映射的正确性，我做了很多细节上的处理，如果在使用本模块的过程中遇到困惑可以参考这里。
 
  - 能够匹配到省或者市的缩写，比如将"北京市"缩写为"北京"，"江苏省"缩写为"江苏"，依旧能够匹配到并且能够自动补全为全称，示例代码如下：
  
