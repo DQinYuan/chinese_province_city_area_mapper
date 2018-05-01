@@ -278,7 +278,7 @@ def echarts_cate_draw(locations, labels, fileName, path="./"
     :param path: 生成的html文件的路径.
     :param title: 图表的标题
     :param subtitle: 图表的子标题
-    :param point_size: 每个散点的大小
+    :param point_size: 每个散点的大小,如果样本数较少可以考虑设置的大一些
     """
 ```
 
