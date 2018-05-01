@@ -92,7 +92,7 @@
 这一段代码运行结束后会在运行代码的当前目录下生成一个df.html文件，用浏览器打开即可看到
 绘制好的地图（如果某条数据'省'，'市'或'区'字段有缺，则会忽略该条数据不进行绘制），速度会比较慢，需要耐心等待，绘制的图像如下：
 
-![绘图展示](http://ou427u8j5.bkt.clouddn.com/%E5%8C%97%E4%BA%AC_%E4%B8%8A%E6%B5%B7_%E6%B3%89%E5%B7%9E.png)
+![绘图展示](https://user-images.githubusercontent.com/23725000/39467918-143b576e-4d63-11e8-9325-8c68651ffcc2.png)
 
 
 
@@ -213,7 +213,7 @@ drawers.draw_locations(processed, "processed.html")
 
 绘制的局部图像如下：
 
-![绘制图像](http://ou427u8j5.bkt.clouddn.com/%E9%95%BF%E4%B8%89%E8%A7%92%E7%83%AD%E5%8A%9B%E5%9B%BE.png)
+![长三角热力图](https://user-images.githubusercontent.com/23725000/39467928-1e7190ae-4d63-11e8-93c4-39f2b2e5432c.png)
 
 
 -----------------------------------以下为2.0版本新增的接口----------------------------------------------
@@ -251,7 +251,7 @@ def echarts_draw(locations, fileName, path="./", title="地域分布图"
 
 然后会在当前目录下生成一个test.html文件，用浏览器打开后即可看到图像：
 
-![echarts热力图](http://ou427u8j5.bkt.clouddn.com/echarts%E7%83%AD%E5%8A%9B%E5%9B%BE.png)
+![echarts热力图](https://user-images.githubusercontent.com/23725000/39467908-0d60e3a0-4d63-11e8-8f25-06df97dd2889.png)
 
 第二个接口是样本分类绘制接口，通过额外传入一个样本的分类信息，能够在地图上以不同的颜色画出属于不同分类的样本散点图，以下代码以“省”作为类别信息绘制分类散点图（可以看到，属于不同省的样本被以不同的颜色标记了出来，这里以“省”作为分类标准只是举个例子，实际应用中可以选取更加有实际意义的分类指标）：
 
@@ -262,7 +262,7 @@ drawers.echarts_cate_draw(processed, processed["省"], "test2.html")
 
 然后会在当前目录下生成一个test2.html文件，用浏览器打开后即可看到图像：
 
-![echarts分类散点图](http://ou427u8j5.bkt.clouddn.com/echarts%E5%88%86%E7%B1%BB%E6%95%A3%E7%82%B9%E5%9B%BE.png)
+![echarts分类散点图](https://user-images.githubusercontent.com/23725000/39467901-0471419a-4d63-11e8-92fd-63bab219a766.png)
 
 该接口更多的参数及其含义如下：
 
