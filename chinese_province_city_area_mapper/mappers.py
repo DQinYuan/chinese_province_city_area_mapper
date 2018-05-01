@@ -7058,3 +7058,9 @@ lat_lon_mapper = {
 '港澳台,港澳台市,花莲县':(23.98,121.6),
 '港澳台,港澳台市,澎湖县':(23.58,119.58),
 }
+
+def reversemap(item):
+    return (item[0], (item[1][1], item[1][0]))
+
+#(省,市,区):(经度,纬度)
+lon_lat_mapper = dict(map(reversemap, lat_lon_mapper.items()))

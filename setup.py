@@ -129,18 +129,21 @@ draw_locations函数还可以通过指定path参数来改变输出路径，示�
 
 本模块的基本使用方法大概就是这些了，如果还想知道更多的细节，请访问该
 模块的github地址 `https://github.com/DQinYuan/chinese_province_city_area_mapper <https://github.com/DQinYuan/chinese_province_city_area_mapper>`_，
-在那里我写了更多的细节
+在那里我写了更多的细节，2.0及以上版本又增加了几个echarts的绘图方便函数，见Github。
 
 """
 
-requires = ['pandas(>=0.20.0)',  
+requires = ['pandas(>=0.20.0)',
            'folium(>=0.5.0)',
            'jieba(>=0.39)',
+           'pyecharts(>=0.5.0)',
+           'echarts-countries-pypkg(>=0.1.4)',
+           'pyecharts-snapshot(>=0.1.5)',
            ]  
 
 
 setup(name='chinese_province_city_area_mapper',
-      version='1.9',
+      version='2.2',
       description='Chinese Province, City and Area Recognition Utilities',
       long_description=LONGDOC,
       author='DQinYuan',

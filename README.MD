@@ -55,7 +55,7 @@
     1  洛江区  泉州市  福建省
     2  朝阳区 
 
-从上面的程序输出中你会发现朝阳区并没有被映射到北京市，这是因为在中国有多个同名的叫做朝阳区的区，并且他们位于不同的市，所以程序就不知道该映射到哪一个市了，因此就不对其进行映射，如果你确定你的数据中的朝阳区都是指北京市的那个朝阳区的话，可以在CPCATransformer的构造函数中传一个字典（叫做umap参数，是user map的简称），指定朝阳区都要映射到北京市，注意只有区到市的这一级映射存在重名问题，中国的市的名称都是唯一的，省的名称也都是唯一的，示例代码如下：
+从上面的程序输出中你会发现朝阳区并没有被映射到北京市，这是因为在中国有多个同名的叫做朝阳区的区，并且他们位于不同的市，所以程序就不知道该映射到哪一个市了（举个例子，南京市有一个鼓楼区，开封市有一个鼓楼区，福州市也有一个鼓楼区，这样程序就不知道应该把鼓楼区映射到哪一个市了），因此就不对其进行映射，如果你确定你的数据中的朝阳区都是指北京市的那个朝阳区的话，可以在CPCATransformer的构造函数中传一个字典（叫做umap参数，是user map的简称），指定朝阳区都要映射到北京市，注意只有区到市的这一级映射存在重名问题，中国的市的名称都是唯一的，省的名称也都是唯一的，示例代码如下：
 
     location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
     from chinese_province_city_area_mapper.transformer import CPCATransformer
@@ -91,6 +91,7 @@
 
 这一段代码运行结束后会在运行代码的当前目录下生成一个df.html文件，用浏览器打开即可看到
 绘制好的地图（如果某条数据'省'，'市'或'区'字段有缺，则会忽略该条数据不进行绘制），速度会比较慢，需要耐心等待，绘制的图像如下：
+
 ![绘图展示](http://ou427u8j5.bkt.clouddn.com/%E5%8C%97%E4%BA%AC_%E4%B8%8A%E6%B5%B7_%E6%B3%89%E5%B7%9E.png)
 
 
@@ -200,14 +201,86 @@ processed = pd.concat([origin, addr_df], axis=1)
 processed.to_csv("processed.csv", index=False, encoding="utf-8")
 ```
 
+注意以上代码会产生产生大量的warnning，这些warnning是因为程序无法确定某个区县属于哪个市（因为这些区县存在重名问题而且在umap中又没有指定它属于哪一个市）.
+
 绘图代码：
 
 ```
 from chinese_province_city_area_mapper import drawers
-#df为上一段代码输出的df
+#processed为上一段代码的processed
 drawers.draw_locations(processed, "processed.html")
 ```
 
 绘制的局部图像如下：
 
 ![绘制图像](http://ou427u8j5.bkt.clouddn.com/%E9%95%BF%E4%B8%89%E8%A7%92%E7%83%AD%E5%8A%9B%E5%9B%BE.png)
+
+
+-----------------------------------以下为2.0版本新增的接口----------------------------------------------
+
+# 更新模块
+通过`pip list`查看模块版本，如果版本低于2.0，则应该使用如下的命令更新模块：
+```
+pip install -U chinese_province_city_area_mapper
+```
+
+# 新的绘图接口
+
+之前版本的绘图接口是基于folium编写的，但是在国内folium的地图显示速度太慢了，所以2.0版本在保留原本的folium绘图接口的基础上添加了echarts的绘图接口.
+
+第一个接口是echarts热力图绘制接口，代码如下，仍然使用之前的测试数据生成的processed变量：
+```
+from chinese_province_city_area_mapper import drawers
+drawers.echarts_draw(processed, "test.html")
+```
+
+该接口的更多参数及其含义如下：
+```
+def echarts_draw(locations, fileName, path="./", title="地域分布图"
+                 , subtitle="location distribute"):
+    
+    """
+    生成地域分布的echarts热力图的html文件.
+    :param locations: 样本的省市区, pandas的dataframe类型.
+    :param fileName: 生成的html文件的文件名.
+    :param path: 生成的html文件的路径.
+    :param title: 图表的标题
+    :param subtitle: 图表的子标题
+    """
+```
+
+然后会在当前目录下生成一个test.html文件，用浏览器打开后即可看到图像：
+
+![echarts热力图](http://ou427u8j5.bkt.clouddn.com/echarts%E7%83%AD%E5%8A%9B%E5%9B%BE.png)
+
+第二个接口是样本分类绘制接口，通过额外传入一个样本的分类信息，能够在地图上以不同的颜色画出属于不同分类的样本散点图，以下代码以“省”作为类别信息绘制分类散点图（可以看到，属于不同省的样本被以不同的颜色标记了出来，这里以“省”作为分类标准只是举个例子，实际应用中可以选取更加有实际意义的分类指标）：
+
+```
+from chinese_province_city_area_mapper import drawers
+drawers.echarts_cate_draw(processed, processed["省"], "test2.html")
+```
+
+然后会在当前目录下生成一个test2.html文件，用浏览器打开后即可看到图像：
+
+![echarts分类散点图](http://ou427u8j5.bkt.clouddn.com/echarts%E5%88%86%E7%B1%BB%E6%95%A3%E7%82%B9%E5%9B%BE.png)
+
+该接口更多的参数及其含义如下：
+
+```
+def echarts_cate_draw(locations, labels, fileName, path="./"
+                      , title="地域分布图", subtitle="location distribute",
+                      point_size=7):
+    """
+    依据分类生成地域分布的echarts散点图的html文件.
+    :param locations: 样本的省市区, pandas的dataframe类型.
+    :param labels: 长度必须和locations相等, 代表每个样本所属的分类.
+    :param fileName: 生成的html文件的文件名.
+    :param path: 生成的html文件的路径.
+    :param title: 图表的标题
+    :param subtitle: 图表的子标题
+    :param point_size: 每个散点的大小
+    """
+```
+
+因为本模块的主要功能是地址匹配而不是画图，所以只是粗略地提供了一些绘图参数控制，如果想要进行更加精细的控制的话，可以自行使用[pyecharts](https://github.com/pyecharts/pyecharts)进行编码，需要注意的是pyecharts本身也自带一套中国地理经纬度信息的数据（地址：[https://github.com/pyecharts/pyecharts/blob/master/pyecharts/datasets/city_coordinates.json](https://github.com/pyecharts/pyecharts/blob/master/pyecharts/datasets/city_coordinates.json)），这个数据集的一个缺点是没有考虑中国的区县重名问题（举个例子，在这个数据集中，“鼓楼区”只对应一个唯一的经纬度，然而，福州市有一个鼓楼区，开封市也有一个鼓楼区），我给出的数据集考虑到了这个问题，所以本模块给出的echarts绘图接口都是基于本模块自带的经纬度数据集的，而不是pyecharts的数据集。如果想更加精细地控制pyecharts绘图参数的话可以直接把本仓库的[drawers模块](https://github.com/DQinYuan/chinese_province_city_area_mapper/blob/master/chinese_province_city_area_mapper/drawers.py)的源码复制过去修改。
+

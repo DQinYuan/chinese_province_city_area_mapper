@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Feb 28 18:55:58 2018
-
+自定义的一些异常类
 @author: 燃烧杯
 """
 
