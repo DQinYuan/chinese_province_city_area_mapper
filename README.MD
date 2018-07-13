@@ -10,25 +10,41 @@
     |上海市|上海市|徐汇区|
     |福建省|泉州市|洛江区|
 
-如果你只是想快速实现以上类型的数据处理的话，那么只需要复制以下代码，不需要过多阅读本文档的内容（复制代码之前，先阅读安装说明将本模块装上）：
-
-    location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"] #任意的可迭代类型，比如Series也可以
-    from chinese_province_city_area_mapper.transformer import CPCATransformer
-    from chinese_province_city_area_mapper import myumap
-    cpca = CPCATransformer(myumap.umap)
-    df = cpca.transform(location_str)
-    df
-
 # 安装说明
 
 代码目前仅仅支持python3
 
-`pip install chinese_province_city_area_mapper`
+`pip install cpca`
+
+> 注:cpca是chinese province city area的缩写
+
+
+
+常见安装错误：
+
+​     有的朋友在我的博客中反映他们在使用的时候会报如下错误：
+
+```
+ModuleNotFoundError: No module named 'jieba'
+```
+
+​            可能是因为某种原因，依赖未能成功的安装上去，这个时候则需要手动使用`pip install jieba命令`进行安装。
+
+
+
+# 中国三级行政区划分（参考自[百度百科](https://baike.baidu.com/item/%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E8%A1%8C%E6%94%BF%E5%8C%BA%E5%88%92/1292734)）
+
+| 行政区级别               |                                                              |
+| ------------------------ | ------------------------------------------------------------ |
+| 一级行政区（省级行政区） | 34个（23个省、5个自治区、4个直辖市、2个特别行政区）          |
+| 二级行政区（地级行政区） | 334个（294个地级<u>市</u>、7个<u>地区</u>、30个<u>自治州</u>、3个<u>盟</u>） |
+| 三级行政区（县级行政区） | 2876个（987个市辖区、363个县级市、1355个县、117自治县、49个旗、3个自治旗、1个特区、1个林区） |
+
 
 
 # 特点
 
- - 基于jieba分词进行匹配，同时用比较复杂的匹配逻辑保证了准确率，笔者根据手头的海量地址描述数据进行了测试
+ - 基于jieba分词进行匹配，同时加入了一些额外的匹配逻辑保证了准确率
  - 自带完整的省，市，区三级地名及其经纬度的数据
  - 支持自定义省，市，区映射
  - 输出的是基于pandas的DataFrame类型的表结构，易于理解和使用
@@ -39,55 +55,102 @@
 
 # Get Started
 
-本模块中最主要的类是chinese_province_city_area_mapper.transformer.CPCATransformer（注：CPCA是Chinese Province City Area的缩写），该类的transform方法可以输入任意的可迭代类型（如list，Series等），然后将其转换为一个DataFrame，示例代码如下：
+本模块中最主要的方法是cpca.transform，该方法可以输入任意的可迭代类型（如list，pandas的Series类型等），然后将其转换为一个DataFrame，下面演示一个最为简单的使用方法：
 
     location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
-    from chinese_province_city_area_mapper.transformer import CPCATransformer
-    cpca = CPCATransformer()
-    df = cpca.transform(location_str)
+    from cpca import *
+    df = transform(location_str)
     df
 
 
 输出的结果为：
 
-         区    市    省
-    0  徐汇区  上海市  上海市
-    1  洛江区  泉州市  福建省
-    2  朝阳区 
-
-从上面的程序输出中你会发现朝阳区并没有被映射到北京市，这是因为在中国有多个同名的叫做朝阳区的区，并且他们位于不同的市，所以程序就不知道该映射到哪一个市了（举个例子，南京市有一个鼓楼区，开封市有一个鼓楼区，福州市也有一个鼓楼区，这样程序就不知道应该把鼓楼区映射到哪一个市了），因此就不对其进行映射，如果你确定你的数据中的朝阳区都是指北京市的那个朝阳区的话，可以在CPCATransformer的构造函数中传一个字典（叫做umap参数，是user map的简称），指定朝阳区都要映射到北京市，注意只有区到市的这一级映射存在重名问题，中国的市的名称都是唯一的，省的名称也都是唯一的，示例代码如下：
-
-    location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
-    from chinese_province_city_area_mapper.transformer import CPCATransformer
-    cpca = CPCATransformer({"朝阳区":"北京市"})
-    df = cpca.transform(location_str)
-    df
-
-输出结果为：
-    
-         区    市    省
+         区    市      省
     0  徐汇区  上海市  上海市
     1  洛江区  泉州市  福建省
     2  朝阳区  北京市  北京市
 
-模块中还内置了一个我推荐大家使用的umap，这个umap中我根据处理地址数据的经验将那些重名的区映射到了它最常见的一个市，这个umap位于chinese_province_city_area_mapper.myumap.umap，使用如下：
+尝试着对代码稍加修改（其实就是将transform方法的umap参数置为空字典）：
 
-    location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
-    from chinese_province_city_area_mapper.transformer import CPCATransformer
-    from chinese_province_city_area_mapper import myumap
-    print(myumap.umap)   #查看这个umap的内容
-    cpca = CPCATransformer(myumap.umap)
-    df = cpca.transform(location_str)
+```
+location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
+from cpca import *
+df = transform(location_str, umap={})
+df
+```
+
+会发现输出变为：
+
+```
+     区    市      省
+0  徐汇区  上海市  上海市
+1  洛江区  泉州市  福建省
+2  朝阳区
+```
+
+发现这种情况的原因是中国其实不止一个“朝阳区”，除了北京市有一个“朝阳区”外，长春市也有一个“朝阳区”，这样的话，程序就不知道该把“朝阳区”映射到哪个市。之所以前一段程序能够成功地将“朝阳区”映射成“北京市”，是因为当你不传umap参数的时候，会默认传一个笔者推荐的字典，其内容如下（在cpca.py中）：
+
+```
+myumap = {'南关区': '长春市',
+ '南山区': '深圳市',
+ '宝山区': '上海市',
+ '市辖区': '东莞市',
+ '普陀区': '上海市',
+ '朝阳区': '北京市',
+ '河东区': '天津市',
+ '白云区': '广州市',
+ '西湖区': '杭州市',
+ '铁西区': '沈阳市'}
+```
+
+你会发现，其中指定了将”朝阳区“映射到北京市，因为笔者在测试数据中发现，数据中的”朝阳区“基本上都是指北京市那个”朝阳区“（原因可能是北京市的”朝阳区“的经济以及知名度要远比长春市的那个”朝阳区“发达）。当然，默认的这个umap并没有囊括中国所有的重名区，因为有的时候，两个重名区在数据中都经常被提及，无法强制指定将某个区映射成固定的市，比如福州市的“鼓楼区”与南京市的“鼓楼区”，都是经常被提及的地名。
+
+看看下面一个例子：
+
+    location_str = ["福建省鼓楼区软件大道89号"]
+    from cpca import *
+    df = transform(location_str)
     df
 
-输出和上一个程序一样
+输出结果为：
+         区    市   省
+    0  鼓楼区       福建省
 
+并且还会产生一个警告信息：
 
-模块中还自带一个简单绘图工具，可以在地图上将上面输出的数据以热力图的形式画出来，代码如下：
+```
+WARNING:root:建议添加到umap中的区有：{'鼓楼区'},有多个市含有相同名称的区
+```
 
-    from chinese_province_city_area_mapper import drawers
+当程序发现重名区并且不知道将其映射到哪一个市时，会将其加入警告信息，提示用户最好根据数据给它指定一个市进行映射。
+
+当使用以下代码时就能成功地将“鼓楼区”映射到“福州市”：
+
+```
+location_str = ["福建省鼓楼区软件大道89号"]
+from cpca import *
+df = transform(location_str, umap={"鼓楼区":"福州市"})
+df
+```
+
+输出结果：
+
+```
+     区    市      省
+0  鼓楼区  福州市  福建省
+```
+
+好在中国只有在三级行政区存在重名问题，二级与一级行政区的名称都是唯一的。
+
+模块中还自带一些简单绘图工具，可以在地图上将上面输出的数据以热力图的形式画出来.
+
+这个工具依赖folium，为了减小本模块的体积，所以并不会预装这个依赖，在使用之前请使用`pip install folium ` .
+
+代码如下：
+
+    from cpca_drawers import *
     #df为上一段代码输出的df
-    drawers.draw_locations(df, "df.html")
+    draw_locations(df, "df.html")
 
 这一段代码运行结束后会在运行代码的当前目录下生成一个df.html文件，用浏览器打开即可看到
 绘制好的地图（如果某条数据'省'，'市'或'区'字段有缺，则会忽略该条数据不进行绘制），速度会比较慢，需要耐心等待，绘制的图像如下：
@@ -96,11 +159,13 @@
 
 
 
-draw_locations函数还可以通过指定path参数来改变输出路径，示例代码如下::
+draw_locations函数还可以通过指定path参数来改变输出路径，示例代码如下:
 
-    from chinese_province_city_area_mapper import drawers
+    from cpca_drawers import *
     #在当前目录的父目录生成df.html
-    drawers.draw_locations(df, "df.html", path="../")
+    draw_locations(df, "df.html", path="../")
+
+还有更多的绘图工具请参考文档的大标题为“示例与测试用例”的部分。
 
 到这里就你就已经知道了本模块的基本使用了，接下来我会阐明更多细节。
 
@@ -134,14 +199,13 @@ SuperMap.getType("江苏")
 为了保证匹配与映射的正确性，我做了很多细节上的处理，如果在使用本模块的过程中遇到困惑可以参考这里。
 
  - 能够匹配到省或者市的缩写，比如将"北京市"缩写为"北京"，"江苏省"缩写为"江苏"，依旧能够匹配到并且能够自动补全为全称，示例代码如下：
- 
+
 ```
 #测试数据
 location_strs = ["江苏省南京市鼓楼区256号", "江苏南京鼓楼区256号"]
 
-from chinese_province_city_area_mapper.transformer import CPCATransformer
-cpca = CPCATransformer()
-df = cpca.transform(location_strs)
+from cpca import *
+df = transform(location_strs)
 df
 ```
 
@@ -160,9 +224,8 @@ df
 #测试数据，一些故意错乱的地址描述
 location_strs = ["静安区南京西路30号", "南京市静安区", "江苏省上海市", "上海市静安区南京西路"]
 
-from chinese_province_city_area_mapper.transformer import CPCATransformer
-cpca = CPCATransformer()
-df = cpca.transform(location_strs)
+from cpca import *
+df = transform(location_strs)
 df
 ```
 
@@ -176,64 +239,67 @@ df
 3  静安区  上海市  上海市
 ```
 
-分析：第一个测试数据"静安区南京西路"会同时匹配到"静安区"和"南京"两个地域名称，但是静安区是属于上海的，和"南京"想矛盾，而且因为"南京"是"南京市"的缩写，因此优先级比较低，故放弃"南京"这个地域名称。
+分析：第一个测试数据"静安区南京西路"会同时匹配到"静安区"和"南京"两个地域名称，但是静安区是属于上海的，和"南京"相矛盾，而且因为"南京"是"南京市"的缩写，因此优先级比较低，故放弃"南京"这个地域名称。
 
 第二个测试数据匹配到"南京市"和"静安区"两个矛盾的地域名称，而且这两个名称都是全称，优先级相同，所以保留地域范围比较大的，即保留"南京市"而放弃"静安区"。第三个测试数据也是一样的道理。
 
 第四个测试数据中有两个市的名称会被匹配到，一个是"上海市"，还有一个是"南京"，但是因为"上海市"在前面被匹配到了，所以"南京"就会被忽略。
 
 
-# 测试数据
+# 示例与测试用例
 
-本仓库放了一份大约一万多条地址描述信息addr.csv，这是我当时测试与开发用的数据，目前的版本可以保证比较高的准确率，大家可以用这个数据继续进行测试，测试代码如下：
+本仓库放了一份大约一万多条地址描述信息addr.csv，用于测试模块，测试代码如下：
+
+
+
+*测试基本功能：*
 
 ```
 #读取数据
 import pandas as pd
 origin = pd.read_csv("addr.csv")
 #转换
-from chinese_province_city_area_mapper.transformer import CPCATransformer
-from chinese_province_city_area_mapper import myumap
-cpca = CPCATransformer(myumap.umap)
-addr_df = cpca.transform(origin["原始地址"])
+from cpca import *
+addr_df = transform(origin["原始地址"], myumap)
 #输出
 processed = pd.concat([origin, addr_df], axis=1)
 processed.to_csv("processed.csv", index=False, encoding="utf-8")
 ```
 
-注意以上代码会产生产生大量的warnning，这些warnning是因为程序无法确定某个区县属于哪个市（因为这些区县存在重名问题而且在umap中又没有指定它属于哪一个市）.
+注意以上代码运行结束后会打印一句warnning，这些warnning是因为程序无法确定某个区县属于哪个市（因为这些区县存在重名问题而且在umap中又没有指定它属于哪一个市）.
 
-绘图代码：
+*测试绘图函数1（绘制热力图）：*
+
+ 模块中绘制热力图的函数是基于folium编写的，为了减小模块体积，在安装模块时没有安装这些绘图库的依赖，如果需要使用这个函数的话，需要先使用`pip install folium  `安装folium  
 
 ```
-from chinese_province_city_area_mapper import drawers
+from cpca_drawers import *
 #processed为上一段代码的processed
-drawers.draw_locations(processed, "processed.html")
+draw_locations(processed, "processed.html")
 ```
 
-绘制的局部图像如下：
+用浏览器打开"processed.html"文件，发现绘制的局部图像如下（在国内folium的地图显示速度比较慢，所以需要耐心等待地图显示）：
 
 ![长三角热力图](https://user-images.githubusercontent.com/23725000/39467928-1e7190ae-4d63-11e8-93c4-39f2b2e5432c.png)
 
 （注意：本模块在绘图时，只绘制那些可以精确地匹配到省市区的地址，对于省市区有一个或多个字段缺失的则会直接忽略）
 
+*测试绘图函数2（绘制echarts热力图）:*
 
------------------------------------以下为2.0版本新增的接口----------------------------------------------
+因为在国内folium的地图显示速度太慢了，所以添加了echarts的热力图绘图函数.
 
-# 更新模块
-通过`pip list`查看模块版本，如果版本低于2.0，则应该使用如下的命令更新模块：
+在使用本函数之前需要先用如下命令安装它的依赖（为了减少本模块的体积，所以这些依赖不会被自动安装）：
+
 ```
-pip install -U chinese_province_city_area_mapper
+pip install pyecharts
+pip install echarts-countries-pypkg
+pip install pyecharts-snapshot
 ```
 
-# 新的绘图接口
-
-之前版本的绘图接口是基于folium编写的，但是在国内folium的地图显示速度太慢了，所以2.0版本在保留原本的folium绘图接口的基础上添加了echarts的绘图接口.
-
-第一个接口是echarts热力图绘制接口，代码如下，仍然使用之前的测试数据生成的processed变量：
+示例代码如下，仍然使用之前的测试数据生成的processed变量：
 ```
-from chinese_province_city_area_mapper import drawers
-drawers.echarts_draw(processed, "test.html")
+from cpca_drawers import *
+echarts_draw(processed, "test.html")
 ```
 
 该接口的更多参数及其含义如下：
@@ -255,11 +321,15 @@ def echarts_draw(locations, fileName, path="./", title="地域分布图"
 
 ![echarts热力图](https://user-images.githubusercontent.com/23725000/39467908-0d60e3a0-4d63-11e8-8f25-06df97dd2889.png)
 
-第二个接口是样本分类绘制接口，通过额外传入一个样本的分类信息，能够在地图上以不同的颜色画出属于不同分类的样本散点图，以下代码以“省”作为类别信息绘制分类散点图（可以看到，属于不同省的样本被以不同的颜色标记了出来，这里以“省”作为分类标准只是举个例子，实际应用中可以选取更加有实际意义的分类指标）：
+*测试绘图函数3(绘制分类信息图)：*
+
+在使用本函数之前需要安装的依赖同上一个绘图函数，如果你是跳过了前面的直接读到这里的话，务必向上翻看一下。
+
+样本分类绘制函数，通过额外传入一个样本的分类信息，能够在地图上以不同的颜色画出属于不同分类的样本散点图，以下代码以“省”作为类别信息绘制分类散点图（可以看到，属于不同省的样本被以不同的颜色标记了出来，这里以“省”作为分类标准只是举个例子，实际应用中可以选取更加有实际意义的分类指标）：
 
 ```
-from chinese_province_city_area_mapper import drawers
-drawers.echarts_cate_draw(processed, processed["省"], "test2.html")
+from cpca_drawers import *
+echarts_cate_draw(processed, processed["省"], "test2.html")
 ```
 
 然后会在当前目录下生成一个test2.html文件，用浏览器打开后即可看到图像：
@@ -284,5 +354,8 @@ def echarts_cate_draw(locations, labels, fileName, path="./"
     """
 ```
 
-因为本模块的主要功能是地址匹配而不是画图，所以只是粗略地提供了一些绘图参数控制，如果想要进行更加精细的控制的话，可以自行使用[pyecharts](https://github.com/pyecharts/pyecharts)进行编码，需要注意的是pyecharts本身也自带一套中国地理经纬度信息的数据（地址：[https://github.com/pyecharts/pyecharts/blob/master/pyecharts/datasets/city_coordinates.json](https://github.com/pyecharts/pyecharts/blob/master/pyecharts/datasets/city_coordinates.json)），这个数据集的一个缺点是没有考虑中国的区县重名问题（举个例子，在这个数据集中，“鼓楼区”只对应一个唯一的经纬度，然而，福州市有一个鼓楼区，开封市也有一个鼓楼区），我给出的数据集考虑到了这个问题，所以本模块给出的echarts绘图接口都是基于本模块自带的经纬度数据集的，而不是pyecharts的数据集。如果想更加精细地控制pyecharts绘图参数的话可以直接把本仓库的[drawers模块](https://github.com/DQinYuan/chinese_province_city_area_mapper/blob/master/chinese_province_city_area_mapper/drawers.py)的源码复制过去修改。
 
+
+# END
+
+如果大家在使用过程中发现一些匹配错误的地址，欢迎提issue来帮助我收集这些错误用例和改善算法，毕竟笔者手头数据有限，难以考虑到所有边界情况

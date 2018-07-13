@@ -13,6 +13,7 @@ class Record:
         self.location = Location()
         #默认选取第一个遇到的省，市或者自治区
         for word in jieba.cut(line):
+            #因为jieba对"上海浦东区"的分词会出现问题，所以这里单独处理
             if word == "上海市浦东新区":
                 self.location.setPlace("上海市", SuperMap.CITY)
                 self.location.setPlace("浦东新区", SuperMap.AREA)
@@ -55,7 +56,10 @@ class SuperMap:
     #如果将“北京市”简写作“北京”，则补全“市”字
     @classmethod
     def fillCity(cls, word):
-        if word and not word.endswith("市"):
+        if word and not word.endswith("市") \
+                and not word.endswith("盟") \
+                and not word.endswith("地区") \
+                and not word.endswith("自治州"):
             return word + "市", True
         return word, False
         

@@ -25,7 +25,8 @@ class CPCATransformer:
         
         import logging
         if len(SuperMap.rep_area_set) != 0:
-            logging.warning("建议添加到umap中的区有：" + str(SuperMap.rep_area_set))
+            logging.warning("建议添加到umap中的区有：" + str(SuperMap.rep_area_set)
+             + ",有多个市含有相同名称的区")
         
         import pandas as pd
         return pd.concat(lines, ignore_index=True)

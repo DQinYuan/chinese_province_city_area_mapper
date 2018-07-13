@@ -44,8 +44,6 @@ class Location:
             else:#重复区名 代码执行路径
                 import logging
                 SuperMap.rep_area_set.add(self.area.name)
-                logging.warning("在多个市存在相同区名-'" + self.area.name + \
-                                "'，最好在CPCATransformer的构造函数传入一个map指定其所属市")
                 if self.city.isNotEmpty():
                     self.__city_and_province()
                     

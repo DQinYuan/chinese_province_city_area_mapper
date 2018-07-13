@@ -7,7 +7,7 @@ Created on Sun Mar  4 13:38:00 2018
 
 def _base_input_check(locations):
     import pandas as pd
-    from .exceptions import InputTypeNotSuportException
+    from chinese_province_city_area_mapper.exceptions import InputTypeNotSuportException
     if not isinstance(locations, pd.DataFrame):
         raise InputTypeNotSuportException(InputTypeNotSuportException.input_type)
     if "省" not in locations.columns or "市" not in locations.columns \
@@ -15,15 +15,21 @@ def _base_input_check(locations):
         raise InputTypeNotSuportException(InputTypeNotSuportException.input_type)
         
 def _geo_update(geo):
-    from .mappers import lon_lat_mapper
+    from chinese_province_city_area_mapper.mappers import lon_lat_mapper
     geo._coordinates.update(lon_lat_mapper)
 
 
 def draw_locations(locations, fileName, path="./"):
+    """
+    基于folium生成地域分布的热力图的html文件.
+    :param locations: 样本的省市区, pandas的dataframe类型.
+    :param fileName: 生成的html文件的文件名.
+    :param path: 生成的html文件的路径.
+    """
     _base_input_check(locations)
     import folium
     from folium.plugins import HeatMap
-    from .infrastructure import SuperMap
+    from chinese_province_city_area_mapper.infrastructure import SuperMap
     map_keys = locations["省"] + "," + locations["市"] + "," + locations["区"]
     heatData = []
     for map_key in map_keys:
@@ -52,7 +58,7 @@ def echarts_draw(locations, fileName, path="./", title="地域分布图"
     _base_input_check(locations)
     map_keys = locations["省"] + "," + locations["市"] + "," + locations["区"]
     count_map = {}
-    from .infrastructure import SuperMap
+    from chinese_province_city_area_mapper.infrastructure import SuperMap
     for map_key in map_keys:
         if SuperMap.lat_lon_mapper.get(map_key):
             count_map[map_key] = count_map.get(map_key, 0) + 1
@@ -96,7 +102,7 @@ def echarts_cate_draw(locations, labels, fileName, path="./"
     
     uniques = set(list(labels))
     
-    from .infrastructure import SuperMap
+    from chinese_province_city_area_mapper.infrastructure import SuperMap
     def _data_add(_geo, _cate_keys, _category):
         real_keys = []
         for cate_key in _cate_keys:
