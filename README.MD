@@ -28,7 +28,7 @@
 ModuleNotFoundError: No module named 'jieba'
 ```
 
-​            可能是因为某种原因，依赖未能成功的安装上去，这个时候则需要手动使用`pip install jieba命令`进行安装。
+​            可能是因为某种原因，依赖未能成功的安装上去，这个时候则需要手动使用`pip install jieba`命令进行安装。
 
 
 
