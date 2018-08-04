@@ -43,7 +43,6 @@ class Location:
                         self.area.reset()
                 self.__city_and_province()
             else:#重复区名 代码执行路径
-                import logging
                 SuperMap.rep_area_set.add(self.area.name)
                 if self.city.isNotEmpty():
                     self.__city_and_province()

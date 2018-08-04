@@ -24,13 +24,14 @@ def transform(location_strs, umap=myumap):
             umap:自定义的区级到市级的映射,主要用于解决区重名问题,如果定义的映射在模块中已经存在，则会覆盖模块中自带的映射
         Returns:
             一个Pandas的DataFrame类型的表格，如下：
-               |省    |市   |区    |
-               |上海市|上海市|徐汇区|
-               |福建省|泉州市|洛江区|
+               |省    |市   |区    |地址                 |
+               |上海市|上海市|徐汇区|虹漕路461号58号楼5楼  |
+               |福建省|泉州市|洛江区|万安塘西工业区        |
             
     """
     from chinese_province_city_area_mapper.transformer import CPCATransformer
     cpca = CPCATransformer(umap)
-    return cpca.transform(location_strs)
+    # loc这里的作用纯粹是为了让输出结果更好看一些
+    return cpca.transform(location_strs).loc[:, ('区','市','省','地址')]
 
 
