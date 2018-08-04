@@ -16,6 +16,7 @@ class Location:
         self.province = Province()
         self.city = City()
         self.area = Area()
+        self.address = Address()
     
     def setPlace(self, name, place_type):
         if not hasattr(self, place_type):
@@ -53,7 +54,7 @@ class Location:
         import pandas as pd
         #组装成DataFrame
         return pd.DataFrame({"省":[self.province.name], "市":[self.city.name], \
-                             "区":[self.area.name]})
+                             "区":[self.area.name],"地址":[self.address.name]})
                     
     def __city_and_province(self):
         if self.city.isNotEmpty() and self.province.isNotEmpty():
@@ -127,9 +128,14 @@ class Area(Place):
         self.precision = 1
         self.belong = self.__getBlong()
         
-
+class Address(Place):
     
-
+    def __init__(self, name=""):
+        super().__init__()
+        
+    def setPlace(self, name):
+        self.name = name
+        self.precision = 1
         
         
  

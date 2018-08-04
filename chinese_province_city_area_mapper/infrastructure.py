@@ -11,6 +11,7 @@ class Record:
     def __init__(self, line):
         from .domain import Location
         self.location = Location()
+        self.address = ""
         #默认选取第一个遇到的省，市或者自治区
         for word in jieba.cut(line):
             #因为jieba对"上海浦东区"的分词会出现问题，所以这里单独处理
@@ -23,6 +24,10 @@ class Record:
             
             if word_type:
                 self.location.setPlace(word, word_type)
+            else:
+                self.address += word
+            
+        self.location.setPlace(self.address, SuperMap.ADDRESS)
         
     def pca_map(self, umap):
          return self.location.pca_map(umap)
@@ -40,6 +45,7 @@ class SuperMap:
     AREA = "area"
     CITY = "city"
     PROVINCE = "province"
+    ADDRESS = "address"
     
     rep_area_set = set()
     
