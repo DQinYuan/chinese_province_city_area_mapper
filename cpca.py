@@ -16,12 +16,13 @@ myumap = {'南关区': '长春市',
  '西湖区': '杭州市',
  '铁西区': '沈阳市'}
 
-def transform(location_strs, umap=myumap):
+def transform(location_strs, umap=myumap, index=[]):
     """将地址描述字符串转换以"省","市","区"信息为列的DataFrame表格
         Args:
             locations:地址描述字符集合,可以是list, Series等任意可以进行for in循环的集合
                       比如:["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区"]
             umap:自定义的区级到市级的映射,主要用于解决区重名问题,如果定义的映射在模块中已经存在，则会覆盖模块中自带的映射
+            index:可以通过这个参数指定输出的DataFrame的index,默认情况下是range(len(data))
         Returns:
             一个Pandas的DataFrame类型的表格，如下：
                |省    |市   |区    |地址                 |
@@ -32,6 +33,6 @@ def transform(location_strs, umap=myumap):
     from chinese_province_city_area_mapper.transformer import CPCATransformer
     cpca = CPCATransformer(umap)
     # loc这里的作用纯粹是为了让输出结果更好看一些
-    return cpca.transform(location_strs).loc[:, ('区','市','省','地址')]
+    return cpca.transform(location_strs, index).loc[:, ('区','市','省','地址')]
 
 

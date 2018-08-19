@@ -65,8 +65,8 @@ class Location:
         elif self.city.isNotEmpty() and self.province.isEmpty():
             self.province.name = self.city.belong
         
-        
-class Place:
+#为了兼容python2  
+class Place(object):
     
     def __init__(self, name=""):
         self.name = name
@@ -89,7 +89,7 @@ class Place:
 class City(Place):
     
     def __init__(self, name=""):
-        super().__init__()
+        super(City, self).__init__()
         
     def __getBlong(self):
         return SuperMap.city_province_mapper.get(self.name)
@@ -103,7 +103,7 @@ class City(Place):
 class Province(Place):
     
     def __init__(self, name=""):
-        super().__init__()
+        super(Province, self).__init__()
         
     def __getBlong(self):
         return SuperMap.province_country_mapper.get(self.name)
@@ -117,7 +117,7 @@ class Province(Place):
 class Area(Place):
     
     def __init__(self, name=""):
-        super().__init__()
+        super(Area, self).__init__()
         
     def __getBlong(self):
         return SuperMap.area_city_mapper.get(self.name)
@@ -130,7 +130,7 @@ class Area(Place):
 class Address(Place):
     
     def __init__(self, name=""):
-        super().__init__()
+        super(Address, self).__init__()
         
     def setPlace(self, name):
         self.name = name
