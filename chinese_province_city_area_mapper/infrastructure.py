@@ -77,6 +77,15 @@ class SuperMap:
                 return word + "市", True
             if cls.province_country_mapper.get(word + "省"):
                 return word + "省", True
+        #以下区域需要采用特殊的填充策略
+        if word and word == '新疆':
+            return '新疆维吾尔自治区',True
+        if word and word == '宁夏':
+            return '宁夏回族自治区',True
+        if word and word == '西藏':
+            return '西藏自治区',True
+        if word and word == '广西':
+            return '广西壮族自治区',True
         return word, False
             
     
