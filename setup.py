@@ -88,7 +88,7 @@ requires = ['pandas(>=0.20.0)',
 
 
 setup(name='cpca',
-      version='0.3.1',
+      version='0.3.2',
       description='Chinese Province, City and Area Recognition Utilities',
       long_description=LONGDOC,
       author='DQinYuan',
