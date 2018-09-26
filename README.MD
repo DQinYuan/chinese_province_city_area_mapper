@@ -20,8 +20,6 @@
 
 > 注:cpca是chinese province city area的缩写
 
-
-
 常见安装错误：
 
 ​     有的朋友在我的博客中反映他们在使用的时候会报如下错误：
@@ -31,6 +29,10 @@ ModuleNotFoundError: No module named 'jieba'
 ```
 
 ​            可能是因为某种原因，依赖未能成功的安装上去，这个时候则需要手动使用`pip install jieba`命令进行安装。
+
+
+
+如果觉得本模块对你有用的话，施舍个star，谢谢。
 
 
 
