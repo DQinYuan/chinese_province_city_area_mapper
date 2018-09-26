@@ -13,7 +13,7 @@ class CPCATransformer:
     def __init__(self, u_map={}):
         self.umap = u_map
     
-    def transform(self, data, index=[]):
+    def transform(self, data, index=[], cut=True, lookahead=8):
         from .infrastructure import SuperMap
         SuperMap.rep_area_set = set()
         import pandas as pd
@@ -21,7 +21,7 @@ class CPCATransformer:
             data = data.astype(str)
         lines = []
         for line in data:
-            lines.append(Record(line).pca_map(self.umap))
+            lines.append(Record(line, cut, lookahead).pca_map(self.umap))
         
         import logging
         if len(SuperMap.rep_area_set) != 0:
@@ -30,6 +30,8 @@ class CPCATransformer:
             
         import pandas as pd
         result = pd.concat(lines, ignore_index=True)
+        
+        # 设置用户自定义的index
         if len(index) == 0:
             return result
         if len(index) != len(data):

@@ -35,7 +35,9 @@ GitHub: `https://github.com/DQinYuan/chinese_province_city_area_mapper <https://
 特点
 ====
 
--  基于jieba分词进行匹配，同时加入了一些额外的匹配逻辑保证了准确率
+-  基于jieba分词进行匹配，同时加入了一些额外的校验匹配逻辑保证了准确率
+
+-  因为jieba分词本身只有80%的准确率，经常会分错，所以引入了全文匹配的模式，这种模式下能够提高准确率，但会导致性能降低，关于如何开启这个模式见Github上的使用文档
 
 -  如果地址数据比较脏的，不能指望依靠这个模块达到100%的准确，本模块只能保证尽可能地提取信息，如果想要达到100%准确率的话，最好在匹配完后再人工核验一下
 
@@ -76,6 +78,44 @@ Get Started
     1  洛江区  泉州市  福建省   万安塘西工业区
     2  朝阳区  北京市  北京市   北苑华贸城
 
+**全文模式**：
+
+jieba分词并不能百分之百保证分词的正确性，在分词错误的情况下会造成奇怪的结果，比如下面::
+
+    location_str = ["浙江省杭州市下城区青云街40号3楼","广东省东莞市莞城区东莞大道海雅百货"]
+    from cpca import *
+    df = transform(location_str)
+    df
+
+输出的结果为::
+
+    区    市    省            地址
+    城区  东莞市  广东省  莞大道海雅百货自然堂专柜
+    城区  杭州市  浙江省  下青云街40号3楼
+
+这种诡异的结果因为jieba本身就将词给分错了，所以我们引入了全文模式，不进行分词，直接全文匹配，使用方法如下::
+
+    location_str = ["浙江省杭州市下城区青云街40号3楼","广东省东莞市莞城区东莞大道海雅百货"]
+    from cpca import *
+    df = transform(location_str, cut=False)
+    df
+
+输出结果::
+
+     区    市    省        地址
+   下城区  杭州市  浙江省  青云街40号3楼
+   莞城区  东莞市  广东省    大道海雅百货
+
+这些就完全正确了，不过全文匹配模式会造成效率低下，我默认会向前看8个字符(对应transform中的lookahead参数默认值为8)，这个是比较保守的，因为有的地名会比较长（比如“新疆维吾尔族自治区”），如果你的地址库中都是些短小的省市区名的话，可以选择将lookahead设置得小一点，比如::
+
+    location_str = ["浙江省杭州市下城区青云街40号3楼","广东省东莞市莞城区东莞大道海雅百货"]
+    from cpca import *
+    df = transform(location_str, cut=False, lookahead=3)
+    df
+
+输出结果与上面一样。
+
+
 如果还想知道更多的细节，请访问该
 模块的github地址 `https://github.com/DQinYuan/chinese_province_city_area_mapper <https://github.com/DQinYuan/chinese_province_city_area_mapper>`_，
 在那里我写了更多的细节.
@@ -88,7 +128,7 @@ requires = ['pandas(>=0.20.0)',
 
 
 setup(name='cpca',
-      version='0.3.2',
+      version='0.3.4',
       description='Chinese Province, City and Area Recognition Utilities',
       long_description=LONGDOC,
       author='DQinYuan',
