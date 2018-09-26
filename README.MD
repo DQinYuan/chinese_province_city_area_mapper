@@ -63,10 +63,12 @@ ModuleNotFoundError: No module named 'jieba'
 
 本模块中最主要的方法是cpca.transform，该方法可以输入任意的可迭代类型（如list，pandas的Series类型等），然后将其转换为一个DataFrame，下面演示一个最为简单的使用方法：
 
-    location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
-    from cpca import *
-    df = transform(location_str)
-    df
+```python
+location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
+from cpca import *
+df = transform(location_str)
+df
+```
 
 
 输出的结果为：
@@ -84,7 +86,7 @@ ModuleNotFoundError: No module named 'jieba'
 
 尝试着对代码稍加修改（其实就是将transform方法的umap参数置为空字典）：
 
-```
+```python
 location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
 from cpca import *
 df = transform(location_str, umap={})
@@ -102,7 +104,7 @@ df
 
 发现这种情况的原因是中国其实不止一个“朝阳区”，除了北京市有一个“朝阳区”外，长春市也有一个“朝阳区”，这样的话，程序就不知道该把“朝阳区”映射到哪个市。之所以前一段程序能够成功地将“朝阳区”映射成“北京市”，是因为当你不传umap参数的时候，会默认传一个笔者推荐的字典，其内容如下（在cpca.py中）：
 
-```
+```python
 myumap = {'南关区': '长春市',
  '南山区': '深圳市',
  '宝山区': '上海市',
@@ -119,10 +121,12 @@ myumap = {'南关区': '长春市',
 
 看看下面一个例子：
 
-    location_str = ["福建省鼓楼区软件大道89号"]
-    from cpca import *
-    df = transform(location_str)
-    df
+```python
+location_str = ["福建省鼓楼区软件大道89号"]
+from cpca import *
+df = transform(location_str)
+df
+```
 
 输出结果为：
 
@@ -141,7 +145,7 @@ WARNING:root:建议添加到umap中的区有：{'鼓楼区'},有多个市含有�
 
 当使用以下代码时就能成功地将“鼓楼区”映射到“福州市”：
 
-```
+```python
 location_str = ["福建省鼓楼区软件大道89号"]
 from cpca import *
 df = transform(location_str, umap={"鼓楼区":"福州市"})
@@ -159,7 +163,7 @@ df
 
 有的时候为了方便concat，想要自定义输出表的index，可以选择使用transform函数的index参数(这个参数只要保证长度和data相同即可，可以是list或者pandas中相关的类型)，示例如下：
 
-```
+```python
 location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
 from cpca import *
 df = transform(location_str, index=["2018年","2017年","2016年"])
@@ -190,13 +194,13 @@ df
 
 输出的结果为：
 
-```python
+```
     区    市    省            地址
 0 城区  东莞市  广东省  莞大道海雅百货自然堂专柜
 1 城区  杭州市  浙江省  下青云街40号3楼
 ```
 
-这种诡异的结果因为jieba本身就将词给分错了，所以我们引入了全文模式，不进行分词，直接全文匹配，使用方法如下:
+这种诡异的结果是因为jieba本身就将词给分错了，所以我们引入了全文模式，不进行分词，直接全文匹配，使用方法如下:
 
 ```python
 location_str = ["浙江省杭州市下城区青云街40号3楼","广东省东莞市莞城区东莞大道海雅百货"]
@@ -207,7 +211,7 @@ df
 
 结果如下：
 
-```python
+```
      区    市    省        地址
 0   下城区  杭州市  浙江省  青云街40号3楼
 1   莞城区  东莞市  广东省    大道海雅百货
@@ -232,9 +236,11 @@ df
 
 代码如下：
 
-    from cpca_drawers import *
-    #df为上一段代码输出的df
-    draw_locations(df, "df.html")
+```python
+from cpca_drawers import *
+#df为上一段代码输出的df
+draw_locations(df, "df.html")
+```
 
 这一段代码运行结束后会在运行代码的当前目录下生成一个df.html文件，用浏览器打开即可看到
 绘制好的地图（如果某条数据'省'，'市'或'区'字段有缺，则会忽略该条数据不进行绘制），速度会比较慢，需要耐心等待，绘制的图像如下：
@@ -245,9 +251,11 @@ df
 
 draw_locations函数还可以通过指定path参数来改变输出路径，示例代码如下:
 
-    from cpca_drawers import *
-    #在当前目录的父目录生成df.html
-    draw_locations(df, "df.html", path="../")
+```python
+from cpca_drawers import *
+#在当前目录的父目录生成df.html
+draw_locations(df, "df.html", path="../")
+```
 
 还有更多的绘图工具请参考文档的大标题为“示例与测试用例”的部分。
 
@@ -257,7 +265,7 @@ draw_locations函数还可以通过指定path参数来改变输出路径，示�
 
 本模块自带全国省市区的映射关系及其经纬度，如果你只是想使用这个数据的话可以使用如下代码：
 
-```
+```python
 from chinese_province_city_area_mapper.infrastructure import SuperMap
 #地区到市的映射数据库，是一个字典类型（key为区名，value为其所属的市名），注意其中包含重复的区名
 SuperMap.area_city_mapper
@@ -284,7 +292,7 @@ SuperMap.getType("江苏")
 
  - 能够匹配到省或者市的缩写，比如将"北京市"缩写为"北京"，"江苏省"缩写为"江苏"，依旧能够匹配到并且能够自动补全为全称，示例代码如下：
 
-```
+```python
 #测试数据
 location_strs = ["江苏省南京市鼓楼区256号", "江苏南京鼓楼区256号"]
 
@@ -304,7 +312,7 @@ df
  - 能够自动检测字符串中匹配到的省，市和区是否是所属关系，如果不是所属关系的话，则会删去优先级较低的（注：如果匹配到的是缩写的话，即将"南京市"缩写为"南京"，则认为优先级较低），如果优先级一样的话，则删除地域范围较小的，示例代码如下：
 
 
-```
+```python
 #测试数据，一些故意错乱的地址描述
 location_strs = ["静安区南京西路30号", "南京市静安区", "江苏省上海市", "上海市静安区南京西路"]
 
@@ -340,7 +348,7 @@ df
 
 *测试基本功能：*
 
-```
+```python
 #读取数据
 import pandas as pd
 origin = pd.read_csv("addr.csv")
@@ -358,7 +366,7 @@ processed.to_csv("processed.csv", index=False, encoding="utf-8")
 
  模块中绘制热力图的函数是基于folium编写的，为了减小模块体积，在安装模块时没有安装这些绘图库的依赖，如果需要使用这个函数的话，需要先使用`pip install folium  `安装folium  
 
-```
+```python
 from cpca_drawers import *
 #processed为上一段代码的processed
 draw_locations(processed, "processed.html")
@@ -383,13 +391,13 @@ pip install pyecharts-snapshot
 ```
 
 示例代码如下，仍然使用之前的测试数据生成的processed变量：
-```
+```python
 from cpca_drawers import *
 echarts_draw(processed, "test.html")
 ```
 
 该接口的更多参数及其含义如下：
-```
+```python
 def echarts_draw(locations, fileName, path="./", title="地域分布图"
                  , subtitle="location distribute"):
     
@@ -413,7 +421,7 @@ def echarts_draw(locations, fileName, path="./", title="地域分布图"
 
 样本分类绘制函数，通过额外传入一个样本的分类信息，能够在地图上以不同的颜色画出属于不同分类的样本散点图，以下代码以“省”作为类别信息绘制分类散点图（可以看到，属于不同省的样本被以不同的颜色标记了出来，这里以“省”作为分类标准只是举个例子，实际应用中可以选取更加有实际意义的分类指标）：
 
-```
+```python
 from cpca_drawers import *
 echarts_cate_draw(processed, processed["省"], "test2.html")
 ```
@@ -424,7 +432,7 @@ echarts_cate_draw(processed, processed["省"], "test2.html")
 
 该接口更多的参数及其含义如下：
 
-```
+```python
 def echarts_cate_draw(locations, labels, fileName, path="./"
                       , title="地域分布图", subtitle="location distribute",
                       point_size=7):
