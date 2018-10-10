@@ -110,7 +110,7 @@ class SuperMap:
                 return word + "省", True
         #以下区域需要采用特殊的填充策略
         if word and word == '新疆':
-            return '新疆维吾尔自治区',True
+            return '新疆维吾尔族自治区',True
         if word and word == '宁夏':
             return '宁夏回族自治区',True
         if word and word == '西藏':
