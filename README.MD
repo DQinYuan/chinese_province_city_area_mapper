@@ -36,13 +36,13 @@ ModuleNotFoundError: No module named 'jieba'
 
 # 中国三级行政区划分（爬取自[中华人民共和国民政局全国行政区划查询平台](http://xzqh.mca.gov.cn/map)）
 
-数据文件在为`resources/pca.csv`，数据为2019年2月20日在官网上爬取的最新权威数据
+数据文件在为[cpca/resources/pca.csv](https://github.com/DQinYuan/chinese_province_city_area_mapper/blob/master/cpca/resources/pca.csv)，数据为2019年2月20日在官网上爬取的最新权威数据
 
 # Get Started
 
 **分词模式：**
 
-本模块中最主要的方法是cpca.transform，该方法可以输入任意的可迭代类型（如list，pandas的Series类型等），然后将其转换为一个DataFrame，下面演示一个最为简单的使用方法：
+本模块中最主要的方法是`cpca.transform`，该方法可以输入任意的可迭代类型（如list，pandas的Series类型等），然后将其转换为一个DataFrame，下面演示一个最为简单的使用方法：
 
 ```python
 location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
@@ -293,7 +293,8 @@ drawer.draw_locations(df, "df.html")
 
 # 数据接口
 
-爬取的原始数据位于`resources/pca.csv`，模块会在启动时读取该文件并将其中的
+爬取的原始数据位于[cpca/resources/pca.csv](https://github.com/DQinYuan/chinese_province_city_area_mapper/blob/master/cpca/resources/pca.csv)
+，模块会在启动时读取该文件并将其中的
 数据转换为需要的数据结构。
 
 通过以下方法可以访问本模块内部的数据结构：
