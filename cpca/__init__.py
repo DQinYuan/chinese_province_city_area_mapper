@@ -192,14 +192,16 @@ def _fill_city(pca, umap):
             if pca.area in area_map and area_map.is_unique_value(pca.area):
                 pca.city = area_map.get_value(pca.area, C)
                 return
-            import logging
-            logging.warning("%s 无法映射, 建议添加进umap中", pca.area)
+
         # 从 省,区 映射
         if pca.area and pca.province:
             newKey = (pca.province, pca.area)
             if newKey in province_area_map and province_area_map.is_unique_value(newKey):
                 pca.city = province_area_map.get_value(newKey, C)
                 return
+
+        import logging
+        logging.warning("%s 无法映射, 建议添加进umap中", pca.area)
 
 
 def _extract_addr(addr, cut, lookahead):

@@ -40,7 +40,7 @@ requires = [
 
 
 setup(name='cpca',
-      version='0.4.0',
+      version='0.4.1',
       description='Chinese Province, City and Area Recognition Utilities',
       long_description=read_rst(README),
       author='DQinYuan',
