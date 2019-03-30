@@ -1,6 +1,0 @@
-pandas>=0.20.0
-folium>=0.5.0
-jieba>=0.39
-pyecharts>=0.5.0
-echarts-countries-pypkg>=0.1.4
-pyecharts-snapshot>=0.1.5

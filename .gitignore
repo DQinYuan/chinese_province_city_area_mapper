@@ -3,3 +3,12 @@ dist
 MANIFEST
 build
 *.egg-info
+.pytest_cache
+.vscode
+processed.csv
+processed.html
+echarts.html
+echarts_cate.html
+df.html
+df_echarts.html
+df_echarts_cate.html
