@@ -120,7 +120,7 @@ myumap = {
 }
 
 
-def transform(location_strs, umap=myumap, index=[], cut=True, lookahead=8, pos_sensitive=False):
+def transform(location_strs, umap=myumap, index=[], cut=True, lookahead=8, pos_sensitive=False, open_warning=True):
     """将地址描述字符串转换以"省","市","区"信息为列的DataFrame表格
         Args:
             locations:地址描述字符集合,可以是list, Series等任意可以进行for in循环的集合
@@ -148,8 +148,8 @@ def transform(location_strs, umap=myumap, index=[], cut=True, lookahead=8, pos_s
 
     import pandas as pd
 
-    result = pd.DataFrame([_handle_one_record(addr, umap, cut, lookahead, pos_sensitive) for addr in location_strs], index=index) \
-             if index else pd.DataFrame([_handle_one_record(addr, umap, cut, lookahead, pos_sensitive) for addr in location_strs])
+    result = pd.DataFrame([_handle_one_record(addr, umap, cut, lookahead, pos_sensitive, open_warning) for addr in location_strs], index=index) \
+             if index else pd.DataFrame([_handle_one_record(addr, umap, cut, lookahead, pos_sensitive, open_warning) for addr in location_strs])
     # 这句的唯一作用是让列的顺序好看一些
     if pos_sensitive:
         return result.loc[:, ('省', '市', '区', '地址', '省_pos', '市_pos', '区_pos')]
@@ -157,7 +157,7 @@ def transform(location_strs, umap=myumap, index=[], cut=True, lookahead=8, pos_s
         return result.loc[:, ('省', '市', '区', '地址')]
 
 
-def _handle_one_record(addr, umap, cut, lookahead, pos_sensitive):
+def _handle_one_record(addr, umap, cut, lookahead, pos_sensitive, open_warning):
     """处理一条记录"""
 
     # 空记录
@@ -172,7 +172,7 @@ def _handle_one_record(addr, umap, cut, lookahead, pos_sensitive):
     # 地名提取
     pca, addr = _extract_addr(addr, cut, lookahead)
 
-    _fill_city(pca, umap)
+    _fill_city(pca, umap, open_warning)
 
     _fill_province(pca)
 
@@ -188,7 +188,7 @@ def _fill_province(pca):
         pca.province = city_map.get_value(pca.city, P)
 
 
-def _fill_city(pca, umap):
+def _fill_city(pca, umap, open_warning):
     """填充市"""
     if not pca.city:
         # 从 区 映射
@@ -208,8 +208,9 @@ def _fill_city(pca, umap):
                 pca.city = province_area_map.get_value(newKey, C)
                 return
 
-        import logging
-        logging.warning("%s 无法映射, 建议添加进umap中", pca.area)
+        if open_warning:
+            import logging
+            logging.warning("%s 无法映射, 建议添加进umap中", pca.area)
 
 
 def _extract_addr(addr, cut, lookahead):
