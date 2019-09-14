@@ -3,6 +3,7 @@ from setuptools import setup
 from setuptools.command.test import test as TestCommand
 import os
 import sys
+import cpca
 
 
 class PyTest(TestCommand):
@@ -40,7 +41,7 @@ requires = [
 
 
 setup(name='cpca',
-      version='0.4.3',
+      version=cpca.__version__,
       description='Chinese Province, City and Area Recognition Utilities',
       long_description=read_rst(README),
       author='DQinYuan',
