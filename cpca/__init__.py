@@ -132,6 +132,7 @@ def transform(location_strs, umap=myumap, index=[], cut=True, lookahead=8, pos_s
                       默认值为8是为了能够发现"新疆维吾尔族自治区"这样的长地名
                       如果你的样本中都是短地名的话，可以考虑把这个数字调小一点以提高性能
             pos_sensitive:如果为True则会多返回三列，分别提取出的省市区在字符串中的位置，如果字符串中不存在的话则显示-1
+            open_warning: 是否打开umap警告, 默认打开
         Returns:
             一个Pandas的DataFrame类型的表格，如下：
                |省    |市   |区    |地址                 |
