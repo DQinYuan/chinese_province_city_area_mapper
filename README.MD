@@ -1,6 +1,5 @@
 
-![Build Status](https://travis-ci.org/DQinYuan/chinese_province_city_area_mapper.svg?branch=master)
-
+[![Build Status](https://www.travis-ci.org/DQinYuan/chinese_province_city_area_mapper.svg?branch=master)](https://www.travis-ci.org/DQinYuan/chinese_province_city_area_mapper)
 # 简介
 
 一个用于提取简体中文字符串中省，市和区并能够进行映射，检验和简单绘图的python模块。
