@@ -5,7 +5,7 @@
 from .structures import AddrMap, Pca
 from .structures import P,C,A
 
-VERSION = (0, 1, 0)
+VERSION = (0, 4, 2)
 
 __version__ = ".".join([str(x) for x in VERSION])
 
@@ -97,6 +97,14 @@ def _fill_province_map(province_map, record_dict):
 
 
 area_map, city_map, province_area_map, province_map, latlng = _data_from_csv()
+
+# 直辖市
+munis = {'北京市', '天津市', '上海市', '重庆市'}
+
+
+def is_munis(city_full_name):
+    return city_full_name in munis
+
 
 myumap = {
     '南关区': '长春市',
@@ -229,6 +237,8 @@ def _jieba_extract(addr):
         if not getattr(result, pca_property):
             setattr(result, pca_property, full_name)
             setattr(result, pca_property + "_pos", pos)
+            if is_munis(full_name):
+                setattr(result, "province_pos", pos)
             nonlocal truncate
             if pos == truncate:
                 truncate += len(name)
@@ -260,20 +270,24 @@ def _full_text_extract(addr, lookahead):
             if not getattr(result, pca_property):
                 setattr(result, pca_property, full_name)
                 setattr(result, pca_property + "_pos", pos)
+                if is_munis(full_name):
+                    setattr(result, "province_pos", pos)
                 nonlocal truncate
                 if pos == truncate:
                     truncate += len(name)
+            return len(name)
         return _defer_set
 
     # i为起始位置
-    for i in range(len(addr)):
+    i = 0
+    while i < len(addr):
         # 用于设置pca属性的函数
         defer_fun = None
         # l为从起始位置开始的长度,从中提取出最长的地址
-        for l in range(1, lookahead + 1):
-            if i + l > len(addr):
+        for length in range(1, lookahead + 1):
+            if i + length > len(addr):
                 break
-            word = addr[i:i + l]
+            word = addr[i:i + length]
             # 优先提取低级别的行政区 (主要是为直辖市和特别行政区考虑)
             if word in area_map:
                 defer_fun = _set_pca('area', i, word, area_map.get_full_name(word))
@@ -286,6 +300,8 @@ def _full_text_extract(addr, lookahead):
                 continue
 
         if defer_fun:
-            defer_fun()
+            i += defer_fun()
+        else:
+            i += 1
 
     return result, addr[truncate:]

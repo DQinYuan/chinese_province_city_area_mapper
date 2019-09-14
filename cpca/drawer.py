@@ -52,13 +52,13 @@ def echarts_draw(locations, file_path, title="地域分布图"
     :param subtitle: 图表的子标题
     """
     from pyecharts import Geo
-    
+
     _base_input_check(locations)
     count_map = {}
     for map_key in zip(locations["省"], locations["市"], locations["区"]):
         if latlng.get(map_key):
             count_map[map_key] = count_map.get(map_key, 0) + 1
-    
+
     geo = Geo(title, subtitle, title_color="#fff",
           title_pos="center", width=1200,
           height=600, background_color='#404a59')
