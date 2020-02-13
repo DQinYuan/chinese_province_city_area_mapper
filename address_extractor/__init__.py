@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 # __init__.py
 
+from collections.abc import Iterable
+
+import pandas as pd
+
 from .structures import AddrMap, Pca
 from .structures import P, C, A
 
-VERSION = (0, 4, 4)
+VERSION = (0, 1, 1)
 
 __version__ = ".".join([str(x) for x in VERSION])
 
@@ -138,9 +142,6 @@ def transform(location_strs, umap=myumap, index=[], cut=True, lookahead=8, pos_s
                |上海市|上海市|徐汇区|虹漕路461号58号楼5楼  |
                |福建省|泉州市|洛江区|万安塘西工业区        |
     """
-    import pandas as pd
-    from collections.abc import Iterable
-
     if not isinstance(location_strs, Iterable):
         from .exceptions import InputTypeNotSuportException
         raise InputTypeNotSuportException(

@@ -1,10 +1,10 @@
-import cpca
-from cpca import drawer
+import address_extractor
+from address_extractor import drawer
 import pandas as pd
 import os
 
 origin_addr = pd.read_csv(os.path.join(os.path.dirname(__file__), 'addr.csv'))
-df = cpca.transform(origin_addr['原始地址'])
+df = address_extractor.transform(origin_addr['原始地址'])
 
 
 def test_draw_locations():

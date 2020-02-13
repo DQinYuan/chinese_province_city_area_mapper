@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+import pandas as pd
+
 from . import latlng
 
 
 def _base_input_check(locations):
-    import pandas as pd
     from .exceptions import InputTypeNotSuportException
     if not isinstance(locations, pd.DataFrame):
         raise InputTypeNotSuportException(InputTypeNotSuportException.input_type)

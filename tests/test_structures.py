@@ -3,7 +3,7 @@
 
 class TestAddrMap(object):
 
-    from cpca.structures import P,C,A
+    from address_extractor.structures import P,C,A
 
     addr_map = None
 
@@ -13,7 +13,7 @@ class TestAddrMap(object):
 
     @classmethod
     def setup_class(cls):
-        from cpca.structures import AddrMap
+        from address_extractor.structures import AddrMap
         cls.addr_map = AddrMap()
         cls.addr_map.append_relational_addr('淮安', cls.place, cls.C)
         cls.addr_map.append_relational_addr('丽水市', cls.place1, cls.C)
@@ -47,7 +47,7 @@ class TestPca(object):
 
     @classmethod
     def setup_class(cls):
-        from cpca.structures import Pca
+        from address_extractor.structures import Pca
         cls.pca = Pca('安徽省','合肥市', '肥东区', 0, 3, 7)
         cls.pca1 = Pca("浙江省", "丽水市", "青田县")
 
