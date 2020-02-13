@@ -3,7 +3,7 @@
 
 
 from .structures import AddrMap, Pca
-from .structures import P,C,A
+from .structures import P, C, A
 
 VERSION = (0, 4, 4)
 
@@ -67,7 +67,7 @@ def _fill_city_map(city_map: AddrMap, record_dict):
         city_map.append_relational_addr('香港', pca_tuple, C)
     elif city_name == '澳门特别行政区':
         city_map.append_relational_addr('澳门', pca_tuple, C)
-    
+
 
 def _fill_province_map(province_map, record_dict):
     sheng = record_dict['sheng']
@@ -147,10 +147,11 @@ def transform(location_strs, umap=myumap, index=[], cut=True, lookahead=8, pos_s
         raise InputTypeNotSuportException(
             'location_strs参数必须为可迭代的类型(比如list, Series等实现了__iter__方法的对象)')
 
-    import pandas as pd
-
-    result = pd.DataFrame([_handle_one_record(addr, umap, cut, lookahead, pos_sensitive, open_warning) for addr in location_strs], index=index) \
-             if index else pd.DataFrame([_handle_one_record(addr, umap, cut, lookahead, pos_sensitive, open_warning) for addr in location_strs])
+    result = pd.DataFrame(
+        [_handle_one_record(addr, umap, cut, lookahead, pos_sensitive, open_warning) for addr in location_strs],
+        index=index) \
+        if index else pd.DataFrame(
+        [_handle_one_record(addr, umap, cut, lookahead, pos_sensitive, open_warning) for addr in location_strs])
     # 这句的唯一作用是让列的顺序好看一些
     if pos_sensitive:
         return result.loc[:, ('省', '市', '区', '地址', '省_pos', '市_pos', '区_pos')]
@@ -253,7 +254,7 @@ def _jieba_extract(addr):
             _set_pca('city', word, city_map.get_full_name(word))
         elif word in province_map:
             _set_pca('province', word, province_map[word])
-        
+
         pos += len(word)
 
     return result, addr[truncate:]
@@ -268,6 +269,7 @@ def _full_text_extract(addr, lookahead):
 
     def _set_pca(pca_property, pos, name, full_name):
         """pca_property: 'province', 'city' or 'area'"""
+
         def _defer_set():
             if not getattr(result, pca_property):
                 setattr(result, pca_property, full_name)
@@ -278,6 +280,7 @@ def _full_text_extract(addr, lookahead):
                 if pos == truncate:
                     truncate += len(name)
             return len(name)
+
         return _defer_set
 
     # i为起始位置
