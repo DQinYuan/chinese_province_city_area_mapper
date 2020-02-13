@@ -18,7 +18,7 @@
 
 数据源：爬取自[中华人民共和国民政局全国行政区划查询平台](http://xzqh.mca.gov.cn/map)
 
-数据文件存储在：[address_extractor/resources/pca.csv](https://github.com/shibing624/address-extractor/blob/master/cpca/resources/pca.csv)，数据为2019年2月20日在官网上爬取的最新权威数据
+数据文件存储在：[address_extractor/resources/pca.csv](./address_extractor/resources/pca.csv)，数据为2019年2月20日在官网上爬取的最新权威数据
 
 
 ## Install
@@ -39,22 +39,17 @@ python3 setup.py install
 ```python
 
 location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
-import cpca
-df = cpca.transform(location_str)
+import address_extractor
+df = address_extractor.transform(location_str)
 print(df)
-
-
 ```
 
 output:
 ```
-
        省     市    区          地址
     0 上海市 上海市  徐汇区     虹漕路461号58号楼5楼
     1 福建省 泉州市  洛江区     万安塘西工业区
     2 北京市 北京市  朝阳区     北苑华贸城
-
-
 ```
 > 程序的输入可以是任意的可迭代类型，如list，tuple，set，pandas的Series类型等;
 > 输出的`df`是一个Pandas的DataFrame类型变量，DataFrame可以非常轻易地转化为csv或者excel文件，Pandas的官方文档：http://pandas.pydata.org/pandas-docs/version/0.20/dsintro.html#dataframe
@@ -64,9 +59,9 @@ output:
 
 ```python
 location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
-import cpca
-df = cpca.transform(location_str, pos_sensitive=True)
-df
+import address_extractor
+df = address_extractor.transform(location_str, pos_sensitive=True)
+print(df)
 ```
 
 output:
@@ -83,9 +78,9 @@ output:
 
 ```python
 location_str = ["浙江省杭州市下城区青云街40号3楼"]
-import cpca
-df = cpca.transform(location_str)
-df
+import address_extractor
+df = address_extractor.transform(location_str)
+print(df)
 ```
 
 输出的结果为：
@@ -100,9 +95,9 @@ df
 
 ```python
 location_str = ["浙江省杭州市下城区青云街40号3楼"]
-import cpca
-df = cpca.transform(location_str, cut=False)
-df
+import address_extractor
+df = address_extractor.transform(location_str, cut=False)
+print(df)
 ```
 
 结果如下：
@@ -118,9 +113,10 @@ df
 再举一个需要全文匹配的例子：
 
 ```python
-import cpca
-cpca.transform(["11月15日早上9点到11月18日下班前王大猫。在观山湖区"], cut=False, pos_sensitive=True)
- ```
+import address_extractor
+df = address_extractor.transform(["11月15日早上9点到11月18日下班前王大猫。在观山湖区"], cut=False, pos_sensitive=True)
+print(df)
+```
 
 output:
 
@@ -133,16 +129,16 @@ output:
 
 ```python
 ## 查询经纬度信息
-from cpca import latlng
+from address_extractor import latlng
 latlng[('北京市','北京市','朝阳区')] #输出('39.95895316640668', '116.52169489108084')
 
 ## 查询含有"鼓楼区"的全部地址
-from cpca import area_map
+from address_extractor import area_map
 area_map.get_relational_addrs('鼓楼区') #[('江苏省', '南京市', '鼓楼区'), ('江苏省', '徐州市', '鼓楼区'), ('福建省', '福州市', '鼓楼区'), ('河南省', '开封市', '鼓楼区')]
 #### 注: city_map可以用来查询含有某个市的全部地址, province_map可以用来查询含有某个省的全部地址
 
 ## 查询含有"江苏省", "鼓楼区"的全部地址
-from cpca import province_area_map
+from address_extractor import province_area_map
 province_area_map.get_relational_addrs(('江苏省', '鼓楼区')) # [('江苏省', '南京市', '鼓楼区'), ('江苏省', '徐州市', '鼓楼区')]
 ```
 
@@ -162,13 +158,13 @@ pip install pyecharts-snapshot
 import pandas as pd
 origin = pd.read_csv("tests/addr.csv")
 #转换
-import cpca
-addr_df = cpca.transform(origin["原始地址"])
+import address_extractor
+addr_df = address_extractor.transform(origin["原始地址"])
 #输出
 processed = pd.concat([origin, addr_df], axis=1)
 processed.to_csv("processed.csv", index=False, encoding="utf-8")
 
-from cpca import drawer
+from address_extractor import drawer
 drawer.echarts_draw(processed, "echarts.html")
 ```
 
@@ -187,7 +183,7 @@ output:
 样本分类绘制函数，通过额外传入一个样本的分类信息，能够在地图上以不同的颜色画出属于不同分类的样本散点图，以下代码以“省”作为类别信息绘制分类散点图（可以看到，属于不同省的样本被以不同的颜色标记了出来，这里以“省”作为分类标准只是举个例子，实际应用中可以选取更加有实际意义的分类指标）：
 
 ```python
-from cpca import drawer
+from address_extractor import drawer
 drawer.echarts_cate_draw(processed, processed["省"], "echarts_cate.html")
 ```
 
