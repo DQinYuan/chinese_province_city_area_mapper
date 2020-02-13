@@ -51,7 +51,8 @@ output:
     1 福建省 泉州市  洛江区     万安塘西工业区
     2 北京市 北京市  朝阳区     北苑华贸城
 ```
-> 程序的输入可以是任意的可迭代类型，如list，tuple，set，pandas的Series类型等;
+> 程序的此处输入`location_str`可以是任意的可迭代类型，如list，tuple，set，pandas的Series类型等;
+
 > 输出的`df`是一个Pandas的DataFrame类型变量，DataFrame可以非常轻易地转化为csv或者excel文件，Pandas的官方文档：http://pandas.pydata.org/pandas-docs/version/0.20/dsintro.html#dataframe
 
 
@@ -83,7 +84,7 @@ df = address_extractor.transform(location_str)
 print(df)
 ```
 
-输出的结果为：
+output:
 
 ```
      省    市      区    地址
@@ -100,7 +101,7 @@ df = address_extractor.transform(location_str, cut=False)
 print(df)
 ```
 
-结果如下：
+output:
 
 ```
    省       市     区         地址
@@ -152,7 +153,7 @@ pip install echarts-countries-pypkg
 pip install pyecharts-snapshot
 ```
 
-使用本仓库提供的一万多条地址数据[tests/addr.csv](https://github.com/shibing624/address-extractor/blob/master/tests/addr.csv)测试：
+使用本仓库提供的一万多条地址数据[tests/addr.csv](./tests/addr.csv)测试：
 ```python
 #读取数据
 import pandas as pd
@@ -187,7 +188,7 @@ from address_extractor import drawer
 drawer.echarts_cate_draw(processed, processed["省"], "echarts_cate.html")
 ```
 
-浏览器打开`echarts_cate.html`后：
+浏览器打开输出的`echarts_cate.html`后：
 
 ![echarts分类散点图](./docs/echarts_cate.png)
 
