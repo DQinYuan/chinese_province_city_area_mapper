@@ -49,10 +49,9 @@ setup(
     keywords='NLP,Simplified Chinese,Chinese geographic information',
     install_requires=reqs.strip().split('\n'),
     packages=find_packages(exclude=['tests']),
-    package_dir={'address_extractor': 'address_extractor', 'address_extractor.resources': 'address_extractor/resources'},
+    package_dir={'address_extractor': 'address_extractor'},
     package_data={
-        '': ['*.*', 'LICENSE', '../LICENSE', 'README.*', '*.csv'],
+        'address_extractor': ['*.*', 'LICENSE', '../LICENSE', 'README.*'],
     },
-    include_package_data=True,
     test_suite='tests',
 )

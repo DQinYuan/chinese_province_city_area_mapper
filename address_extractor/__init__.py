@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # __init__.py
-
+import os
 from collections.abc import Iterable
 
 import pandas as pd
@@ -11,6 +11,9 @@ from .structures import P, C, A
 VERSION = (0, 1, 1)
 
 __version__ = ".".join([str(x) for x in VERSION])
+
+pwd_path = os.path.abspath(os.path.dirname(__file__))
+pca_path = os.path.join(pwd_path, 'pca.csv')
 
 
 def _data_from_csv() -> (AddrMap, AddrMap, AddrMap, dict, dict):
@@ -25,13 +28,10 @@ def _data_from_csv() -> (AddrMap, AddrMap, AddrMap, dict, dict):
     # (省名, 市名, 区名) -> (纬度,经度)
     latlng = {}
     # 数据约定:国家直辖市的sheng字段为直辖市名称, 省直辖县的city字段为空
-    from pkg_resources import resource_stream
 
-    with resource_stream('cpca.resources', 'pca.csv') as pca_stream:
-        from io import TextIOWrapper
+    with open(pca_path, encoding='utf-8')as f:
         import csv
-        text = TextIOWrapper(pca_stream, encoding='utf8')
-        pca_csv = csv.DictReader(text)
+        pca_csv = csv.DictReader(f)
         for record_dict in pca_csv:
             latlng[(record_dict['sheng'], record_dict['shi'], record_dict['qu'])] = \
                 (record_dict['lat'], record_dict['lng'])
