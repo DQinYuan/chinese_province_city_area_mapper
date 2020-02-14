@@ -34,8 +34,8 @@ pip3 install addressparser
 or
 
 ```
-git clone https://github.com/shibing624/address-extractor.git
-cd address-extractor
+git clone https://github.com/shibing624/addressparser.git
+cd addressparser
 python3 setup.py install
 ```
 
