@@ -39,7 +39,8 @@ cd addressparser
 python3 setup.py install
 ```
 
-## Usage:
+## Usage
+
 - 省市县提取
 ```python
 
@@ -196,6 +197,15 @@ drawer.echarts_cate_draw(processed, processed["省"], "echarts_cate.html")
 浏览器打开输出的`echarts_cate.html`后：
 
 ![echarts分类散点图](./docs/echarts_cate.png)
+
+## Command line usage
+- 命令行模式
+支持批量提取地址的省市县信息：
+```
+python3 -m addressparser address_input.csv -o out.csv
+
+```
+> 输入文件：`address_input.csv`；输出文件：`out.csv`，省市县地址以`\t`间隔
 
 
 ## Todo
