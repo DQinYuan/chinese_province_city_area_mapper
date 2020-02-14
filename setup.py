@@ -7,7 +7,7 @@ import sys
 
 from setuptools import setup, find_packages
 
-import address_extractor
+import addressparser
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -24,9 +24,9 @@ with open('requirements.txt', 'r', encoding='utf-8') as f:
     reqs = f.read()
 
 setup(
-    name='address_extractor',
-    version=address_extractor.__version__,
-    description='Chinese Address Extraction Tool,Chinese Province, City and Area Recognition Utilities',
+    name='addressparser',
+    version=addressparser.__version__,
+    description='Chinese Address Parser and Extraction Tool,Chinese Province, City and Area Recognition Utilities',
     long_description=readme,
     long_description_content_type='text/markdown',
     author='XuMing',
@@ -49,9 +49,9 @@ setup(
     keywords='NLP,Simplified Chinese,Chinese geographic information',
     install_requires=reqs.strip().split('\n'),
     packages=find_packages(exclude=['tests']),
-    package_dir={'address_extractor': 'address_extractor'},
+    package_dir={'addressparser': 'addressparser'},
     package_data={
-        'address_extractor': ['*.*', 'LICENSE', '../LICENSE', 'README.*'],
+        'addressparser': ['*.*', 'LICENSE', '../LICENSE', 'README.*'],
     },
     test_suite='tests',
 )

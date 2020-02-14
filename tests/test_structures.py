@@ -2,9 +2,6 @@
 
 
 class TestAddrMap(object):
-
-    from address_extractor.structures import P,C,A
-
     addr_map = None
 
     place = ("江苏省", "淮安市", "清江浦区")
@@ -13,7 +10,7 @@ class TestAddrMap(object):
 
     @classmethod
     def setup_class(cls):
-        from address_extractor.structures import AddrMap
+        from addressparser.structures import AddrMap
         cls.addr_map = AddrMap()
         cls.addr_map.append_relational_addr('淮安', cls.place, cls.C)
         cls.addr_map.append_relational_addr('丽水市', cls.place1, cls.C)
@@ -36,19 +33,17 @@ class TestAddrMap(object):
         assert self.addr_map.is_unique_value('杭州市') == False
 
     def test_get_value(self):
-        assert self.addr_map.get_value("丽水市", self.P) == "浙江省" 
-
+        assert self.addr_map.get_value("丽水市", self.P) == "浙江省"
 
 
 class TestPca(object):
-
     pca = None
     pca1 = None
 
     @classmethod
     def setup_class(cls):
-        from address_extractor.structures import Pca
-        cls.pca = Pca('安徽省','合肥市', '肥东区', 0, 3, 7)
+        from addressparser.structures import Pca
+        cls.pca = Pca('安徽省', '合肥市', '肥东区', 0, 3, 7)
         cls.pca1 = Pca("浙江省", "丽水市", "青田县")
 
     def _assert(self, p_name, assert_name):

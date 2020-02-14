@@ -8,9 +8,7 @@ import pandas as pd
 from .structures import AddrMap, Pca
 from .structures import P, C, A
 
-VERSION = (0, 1, 1)
-
-__version__ = ".".join([str(x) for x in VERSION])
+__version__ = "0.1.1"
 
 pwd_path = os.path.abspath(os.path.dirname(__file__))
 pca_path = os.path.join(pwd_path, 'pca.csv')

@@ -5,13 +5,13 @@
 """
 import pandas as pd
 
-import address_extractor
-from address_extractor import drawer
+import addressparser
+from addressparser import drawer
 
 if __name__ == '__main__':
     origin = pd.read_csv("../tests/addr.csv")
     # 转换
-    addr_df = address_extractor.transform(origin["原始地址"])
+    addr_df = addressparser.transform(origin["原始地址"])
     # 输出
     processed = pd.concat([origin, addr_df], axis=1)
     processed.to_csv("processed.csv", index=False, encoding="utf-8")

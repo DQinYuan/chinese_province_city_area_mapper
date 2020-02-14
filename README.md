@@ -1,5 +1,5 @@
-# address-extractor
-中文地址提取工具，支持中国三级地址（省、市、县）提取和映射，支持地址热力图绘制。python3开发。
+# addressparser
+中文地址提取工具，支持中国三级区划地址（省、市、县）提取和映射，支持地址目的地热力图绘制。python3开发。
 
 
 ## Feature
@@ -14,20 +14,21 @@
 
 > 注：“地址”列代表去除了省市区之后的具体地址
 
-## demo
+## Demo
 
 https://www.borntowin.cn/product/address_extraction/
 
-## 中国三级行政区划分
+## Data
+#### 中国三级行政区划分
 
 数据源：爬取自[中华人民共和国民政局全国行政区划查询平台](http://xzqh.mca.gov.cn/map)
 
-数据文件存储在：[address_extractor/resources/pca.csv](./address_extractor/resources/pca.csv)，数据为2019年2月20日在官网上爬取的最新权威数据
+数据文件存储在：[addressparser/resources/pca.csv](./addressparser/resources/pca.csv)，数据为2019年2月20日在官网上爬取的最新权威数据
 
 
 ## Install
 ```
-pip3 install address_extractor
+pip3 install addressparser
 ```
 
 or
@@ -43,8 +44,8 @@ python3 setup.py install
 ```python
 
 location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
-import address_extractor
-df = address_extractor.transform(location_str)
+import addressparser
+df = addressparser.transform(location_str)
 print(df)
 ```
 
@@ -64,8 +65,8 @@ output:
 
 ```python
 location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
-import address_extractor
-df = address_extractor.transform(location_str, pos_sensitive=True)
+import addressparser
+df = addressparser.transform(location_str, pos_sensitive=True)
 print(df)
 ```
 
@@ -83,8 +84,8 @@ output:
 
 ```python
 location_str = ["浙江省杭州市下城区青云街40号3楼"]
-import address_extractor
-df = address_extractor.transform(location_str)
+import addressparser
+df = addressparser.transform(location_str)
 print(df)
 ```
 
@@ -100,8 +101,8 @@ output:
 
 ```python
 location_str = ["浙江省杭州市下城区青云街40号3楼"]
-import address_extractor
-df = address_extractor.transform(location_str, cut=False)
+import addressparser
+df = addressparser.transform(location_str, cut=False)
 print(df)
 ```
 
@@ -118,8 +119,8 @@ output:
 再举一个需要全文匹配的例子：
 
 ```python
-import address_extractor
-df = address_extractor.transform(["11月15日早上9点到11月18日下班前王大猫。在观山湖区"], cut=False, pos_sensitive=True)
+import addressparser
+df = addressparser.transform(["11月15日早上9点到11月18日下班前王大猫。在观山湖区"], cut=False, pos_sensitive=True)
 print(df)
 ```
 
@@ -134,16 +135,16 @@ output:
 
 ```python
 ## 查询经纬度信息
-from address_extractor import latlng
+from addressparser import latlng
 latlng[('北京市','北京市','朝阳区')] #输出('39.95895316640668', '116.52169489108084')
 
 ## 查询含有"鼓楼区"的全部地址
-from address_extractor import area_map
+from addressparser import area_map
 area_map.get_relational_addrs('鼓楼区') #[('江苏省', '南京市', '鼓楼区'), ('江苏省', '徐州市', '鼓楼区'), ('福建省', '福州市', '鼓楼区'), ('河南省', '开封市', '鼓楼区')]
 #### 注: city_map可以用来查询含有某个市的全部地址, province_map可以用来查询含有某个省的全部地址
 
 ## 查询含有"江苏省", "鼓楼区"的全部地址
-from address_extractor import province_area_map
+from addressparser import province_area_map
 province_area_map.get_relational_addrs(('江苏省', '鼓楼区')) # [('江苏省', '南京市', '鼓楼区'), ('江苏省', '徐州市', '鼓楼区')]
 ```
 
@@ -163,13 +164,13 @@ pip install pyecharts-snapshot
 import pandas as pd
 origin = pd.read_csv("tests/addr.csv")
 #转换
-import address_extractor
-addr_df = address_extractor.transform(origin["原始地址"])
+import addressparser
+addr_df = addressparser.transform(origin["原始地址"])
 #输出
 processed = pd.concat([origin, addr_df], axis=1)
 processed.to_csv("processed.csv", index=False, encoding="utf-8")
 
-from address_extractor import drawer
+from addressparser import drawer
 drawer.echarts_draw(processed, "echarts.html")
 ```
 
@@ -188,13 +189,19 @@ output:
 样本分类绘制函数，通过额外传入一个样本的分类信息，能够在地图上以不同的颜色画出属于不同分类的样本散点图，以下代码以“省”作为类别信息绘制分类散点图（可以看到，属于不同省的样本被以不同的颜色标记了出来，这里以“省”作为分类标准只是举个例子，实际应用中可以选取更加有实际意义的分类指标）：
 
 ```python
-from address_extractor import drawer
+from addressparser import drawer
 drawer.echarts_cate_draw(processed, processed["省"], "echarts_cate.html")
 ```
 
 浏览器打开输出的`echarts_cate.html`后：
 
 ![echarts分类散点图](./docs/echarts_cate.png)
+
+
+## Todo
+- [ ] 解决路名被误识别为省市名的问题
+- [ ] 增加定期从民政局官网，统计局官网爬取最新省市县镇村划分的功能
+
 
 ## Contribute
 
@@ -204,8 +211,9 @@ drawer.echarts_cate_draw(processed, processed["省"], "echarts_cate.html")
  - 在`tests`添加相应的单元测试
  - 使用`python setup.py test`来运行所有单元测试，确保所有单测都是通过的
 
-之后即可提交PR
+之后即可提交PR。
 
-## TODO
- - 解决路名被误识别为省市名的问题
- - 增加定期从民政局官网，统计局官网爬取最新省市县镇村划分的功能
+## Reference
+
+* [chinese_province_city_area_mapper](https://github.com/DQinYuan/chinese_province_city_area_mapper)
+* [smartParsePro](https://github.com/wzc570738205/smartParsePro)
