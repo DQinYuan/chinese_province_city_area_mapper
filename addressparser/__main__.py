@@ -18,7 +18,10 @@ def parse(addresses):
     df = addressparser.transform(addresses, open_warning=False)
 
     for map_key in zip(df["省"], df["市"], df["区"], df["地址"]):
-        result.append('\t'.join([map_key[0], map_key[1], map_key[2], map_key[3]]))
+        place = map_key[3]
+        if not isinstance(place, str):
+            place = ''
+        result.append('\t'.join([map_key[0], map_key[1], map_key[2], place]))
     return result
 
 
