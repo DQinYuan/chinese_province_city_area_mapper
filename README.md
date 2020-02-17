@@ -211,7 +211,7 @@ python3 -m addressparser address_input.csv -o out.csv
 ## Todo
 - [ ] 解决路名被误识别为省市名的问题
 - [ ] 增加定期从民政局官网，统计局官网爬取最新省市县镇村划分的功能
-
+- [ ] 数据修复，吉林省、广西省部分区划地址和上海浦东新区需要更新
 
 ## Contribute
 
