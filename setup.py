@@ -31,7 +31,7 @@ setup(
     long_description_content_type='text/markdown',
     author='XuMing',
     author_email='xuming624@qq.com',
-    url='https://github.com/shibing624/address-extractor',
+    url='https://github.com/shibing624/addressparser',
     license="MIT",
     classifiers=[
         'Intended Audience :: Developers',
@@ -51,7 +51,7 @@ setup(
     packages=find_packages(exclude=['tests']),
     package_dir={'addressparser': 'addressparser'},
     package_data={
-        'addressparser': ['*.*', 'LICENSE', '../LICENSE', 'README.*'],
+        'addressparser': ['*.*', '../LICENSE', '../*.txt', '../README.*'],
     },
     test_suite='tests',
 )
