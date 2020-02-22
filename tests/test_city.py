@@ -68,3 +68,4 @@ def test_error_city():
     print('-' * 42)
     df = addressparser.transform(location_str, cut=True)
     print(df)
+

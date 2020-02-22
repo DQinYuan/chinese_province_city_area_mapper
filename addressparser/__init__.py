@@ -3,15 +3,20 @@
 import os
 from collections.abc import Iterable
 
+import jieba
 import pandas as pd
 
 from .structures import AddrMap, Pca
 from .structures import P, C, A
 
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 pwd_path = os.path.abspath(os.path.dirname(__file__))
+# 区划地址文件
 pca_path = os.path.join(pwd_path, 'pca.csv')
+# 自定义切词词典
+word_freq_path = os.path.join(pwd_path, 'word_freq.dict')
+jieba.set_dictionary(word_freq_path)
 
 
 def _data_from_csv() -> (AddrMap, AddrMap, AddrMap, dict, dict):
@@ -45,8 +50,12 @@ def _data_from_csv() -> (AddrMap, AddrMap, AddrMap, dict, dict):
 def _fill_province_area_map(province_area_map: AddrMap, record_dict):
     pca_tuple = (record_dict['sheng'], record_dict['shi'], record_dict['qu'])
     key = (record_dict['sheng'], record_dict['qu'])
-    # 第三个参数在此处没有意义, 随便给的
+    # 第三个参数在此处没有意义
     province_area_map.append_relational_addr(key, pca_tuple, P)
+
+
+# 过滤混淆区名 '河北北戴河富丽小区1号'
+filter_area_names = ['河北区', '新城区']
 
 
 def _fill_area_map(area_map: AddrMap, record_dict):
@@ -62,11 +71,15 @@ def _fill_area_map(area_map: AddrMap, record_dict):
     # 4字区划简称
     if len(area_name) > 3 and (area_name.endswith('新区') or area_name.endswith('城区') or area_name.endswith('林区')):
         area_map.append_relational_addr(area_name[:-2], pca_tuple, A)
-    elif area_name == '河北区':
+    elif area_name in filter_area_names:
         pass
     # 3字区划简称
     elif len(area_name) > 2 and (area_name.endswith('市') or area_name.endswith('区') or area_name.endswith('县')):
         area_map.append_relational_addr(area_name[:-1], pca_tuple, A)
+
+
+# 过滤混淆市名 eg '吉林省、吉林市的混淆'
+filter_city_names = ['吉林市']
 
 
 def _fill_city_map(city_map: AddrMap, record_dict):
@@ -80,7 +93,7 @@ def _fill_city_map(city_map: AddrMap, record_dict):
     pca_tuple = (record_dict['sheng'], record_dict['shi'], record_dict['qu'])
     city_map.append_relational_addr(city_name, pca_tuple, C)
     # fix 吉林省、吉林市的混淆
-    if city_name == '吉林市':
+    if city_name in filter_city_names:
         pass
     elif city_name.endswith('市'):
         city_map.append_relational_addr(city_name[:-1], pca_tuple, C)
@@ -135,6 +148,7 @@ munis = {'北京市', '天津市', '上海市', '重庆市'}
 
 def is_munis(city_full_name):
     return city_full_name in munis
+
 
 # 区级到市级的映射
 myumap = {
@@ -200,14 +214,14 @@ def _handle_one_record(addr, umap, cut, lookahead, pos_sensitive, open_warning):
         return empty
 
     # 地名提取
-    pca, addr = _extract_addr(addr, cut, lookahead)
+    pca, left_addr = _extract_addr(addr, cut, lookahead)
     # 填充市
     _fill_city(pca, umap, open_warning)
     # 填充省
     _fill_province(pca)
 
     result = pca.propertys_dict(pos_sensitive)
-    result["地址"] = addr
+    result["地址"] = left_addr
 
     return result
 
@@ -256,10 +270,7 @@ def _extract_addr(addr, cut, lookahead):
 
 def _jieba_extract(addr):
     """基于结巴分词进行提取"""
-    import jieba
-
     result = Pca()
-
     pos = 0
     truncate = 0
 
@@ -290,9 +301,7 @@ def _jieba_extract(addr):
 
 def _full_text_extract(addr, lookahead):
     """全文匹配进行提取"""
-
     result = Pca()
-
     truncate = 0
 
     def _set_pca(pca_property, pos, name, full_name):
