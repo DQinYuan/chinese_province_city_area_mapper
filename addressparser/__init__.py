@@ -62,6 +62,8 @@ def _fill_area_map(area_map: AddrMap, record_dict):
     # 4字区划简称
     if len(area_name) > 3 and (area_name.endswith('新区') or area_name.endswith('城区') or area_name.endswith('林区')):
         area_map.append_relational_addr(area_name[:-2], pca_tuple, A)
+    elif area_name == '河北区':
+        pass
     # 3字区划简称
     elif len(area_name) > 2 and (area_name.endswith('市') or area_name.endswith('区') or area_name.endswith('县')):
         area_map.append_relational_addr(area_name[:-1], pca_tuple, A)
