@@ -3,7 +3,6 @@
 import os
 from collections.abc import Iterable
 
-import jieba
 import pandas as pd
 
 from .structures import AddrMap, Pca
@@ -14,9 +13,6 @@ __version__ = "0.1.6"
 pwd_path = os.path.abspath(os.path.dirname(__file__))
 # 区划地址文件
 pca_path = os.path.join(pwd_path, 'pca.csv')
-# 自定义切词词典
-word_freq_path = os.path.join(pwd_path, 'word_freq.dict')
-jieba.set_dictionary(word_freq_path)
 
 
 def _data_from_csv() -> (AddrMap, AddrMap, AddrMap, dict, dict):
@@ -270,6 +266,7 @@ def _extract_addr(addr, cut, lookahead):
 
 def _jieba_extract(addr):
     """基于结巴分词进行提取"""
+    import jieba
     result = Pca()
     pos = 0
     truncate = 0
