@@ -148,9 +148,9 @@ def test_full_text_extract3():
 
 def test_full_text_extract4():
     """测试较小的lookahead"""
-    pca, addr = addressparser._full_text_extract('湖北武汉武昌区复兴路1号', 2)
+    pca, addr = addressparser._full_text_extract('湖北武汉东西湖区复兴路1号', 2)
     print(pca, addr)
-    assert addr == '武昌区复兴路1号'
+    assert addr == '东西湖区复兴路1号'
     assert pca.province == '湖北省'
     assert pca.province_pos == 0
     assert pca.city == '武汉市'
