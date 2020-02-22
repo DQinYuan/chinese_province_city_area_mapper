@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import pandas as pd
-from mock import MagicMock
 
 import addressparser
-from addressparser.structures import P, C
 from addressparser.structures import Pca
 
 
@@ -61,23 +59,9 @@ def test_data_from_csv():
     assert area_map.get_relational_addrs('东城区') == [('北京市', '北京市', '东城区')]
 
 
-def mock_map(monkeypatch, attrname, return_value, is_contain=True, is_unique_value=True):
-    mock_map = MagicMock()
-    mock_map.__contains__.return_value = is_contain
-    mock_map.get_value.return_value = return_value
-    mock_map.is_unique_value.return_value = is_unique_value
-    monkeypatch.setattr(addressparser, attrname, mock_map)
-    return mock_map
-
-
-def test_fill_province(monkeypatch):
+def test_fill_province():
     pca = Pca('', '淮安市', '')
-
-    # 猴子补丁
-    mo_map = mock_map(monkeypatch, 'city_map', '江苏省')
-
     addressparser._fill_province(pca)
-    mo_map.get_value.assert_called_once_with(pca.city, P)
     assert pca.province == "江苏省"
     assert pca.city == '淮安市'
 
@@ -88,219 +72,139 @@ def test_fill_city_1():
     assert pca.city == '北京市'
 
 
-def test_fill_city_2(monkeypatch):
-    pca = Pca('', '', '朝阳区')
-    mo_map = mock_map(monkeypatch, 'area_map', '北京市')
-    addressparser._fill_city(pca, {}, True)
-
-    mo_map.get_value.assert_called_once_with(pca.area, C)
-    assert pca.city == '北京市'
-
-
-def test_fill_city_3(monkeypatch):
-    pca = Pca('江苏省', '', '鼓楼区')
-    mock_map(monkeypatch, 'area_map', '', is_contain=True, is_unique_value=False)
-    mo_map = mock_map(monkeypatch, 'province_area_map', '南京市')
-    addressparser._fill_city(pca, {}, True)
-
-    mo_map.get_value.assert_called_once_with(('江苏省', '鼓楼区'), C)
-    assert pca.city == '南京市'
-
-
-def _dict2addr_map(mydict, valuedict={}, is_unique_value=True):
-    mock_map = MagicMock()
-
-    mock_map.get_full_name.side_effect = lambda key: mydict[key]
-    mock_map.get_value.side_effect = lambda key, pca: valuedict[key]
-
-    mock_map.__contains__.side_effect = lambda key: key in mydict
-    mock_map.is_unique_value.return_value = is_unique_value
-    return mock_map
-
-
-def test_jieba_extract(monkeypatch):
+def test_jieba_extract():
     """地址全部在句子开头的情况"""
-    monkeypatch.setattr(addressparser, 'province_map', {'江苏': '江苏省'})
-    monkeypatch.setattr(addressparser, 'city_map', _dict2addr_map({'淮安': '淮安市'}))
-    monkeypatch.setattr(addressparser, 'area_map', _dict2addr_map({'清浦区': '清浦区'}))
-
-    pca, addr = addressparser._jieba_extract('江苏淮安清浦区人民路111号')
-
-    assert addr == '人民路111号'
-    assert pca.province == '江苏省'
+    pca, addr = addressparser._jieba_extract('湖北武汉复兴路111号')
+    print(pca, addr)
+    assert addr == '复兴路111号'
+    assert pca.province == '湖北省'
     assert pca.province_pos == 0
-    assert pca.city == '淮安市'
+    assert pca.city == '武汉市'
     assert pca.city_pos == 2
-    assert pca.area == '清浦区'
-    assert pca.area_pos == 4
 
 
-def test_jieba_extract2(monkeypatch):
+def test_jieba_extract2():
     """地址在句子中间的情况"""
-    monkeypatch.setattr(addressparser, 'province_map', {'江苏': '江苏省'})
-    monkeypatch.setattr(addressparser, 'city_map', _dict2addr_map({'淮安': '淮安市'}))
-    monkeypatch.setattr(addressparser, 'area_map', _dict2addr_map({'清浦区': '清浦区'}))
-
-    pca, addr = addressparser._jieba_extract('我家的地址是江苏淮安清浦区人民路111号')
-
-    assert addr == '我家的地址是江苏淮安清浦区人民路111号'
-    assert pca.province == '江苏省'
+    pca, addr = addressparser._jieba_extract('我家的地址是湖北武汉武昌区复兴路111号')
+    assert addr == '我家的地址是湖北武汉武昌区复兴路111号'
+    assert pca.province == '湖北省'
     assert pca.province_pos == 6
-    assert pca.city == '淮安市'
+    assert pca.city == '武汉市'
     assert pca.city_pos == 8
-    assert pca.area == '清浦区'
+    assert pca.area == '武昌区'
     assert pca.area_pos == 10
 
 
-def test_jieba_extract3(monkeypatch):
+def test_jieba_extract3():
     """测试地名出现两次省名的情况"""
-    monkeypatch.setattr(addressparser, 'province_map', {'江苏': '江苏省', '上海市': '上海市'})
-    monkeypatch.setattr(addressparser, 'city_map', _dict2addr_map({'淮安': '淮安市'}))
-    monkeypatch.setattr(addressparser, 'area_map', _dict2addr_map({'清浦区': '清浦区'}))
-
-    pca, addr = addressparser._jieba_extract('我家的地址是江苏淮安清浦区人民路111号上海市')
-
-    assert addr == '我家的地址是江苏淮安清浦区人民路111号上海市'
-    assert pca.province == '江苏省'
+    pca, addr = addressparser._jieba_extract('我家的地址是湖北武汉武昌区复兴路111号上海市')
+    assert addr == '我家的地址是湖北武汉武昌区复兴路111号上海市'
+    assert pca.province == '湖北省'
     assert pca.province_pos == 6
-    assert pca.city == '淮安市'
+    assert pca.city == '武汉市'
     assert pca.city_pos == 8
-    assert pca.area == '清浦区'
+    assert pca.area == '武昌区'
     assert pca.area_pos == 10
 
 
-def test_full_text_extract1(monkeypatch):
+def test_full_text_extract1():
     """地址在开头"""
-    monkeypatch.setattr(addressparser, 'province_map', {'江苏': '江苏省'})
-    monkeypatch.setattr(addressparser, 'city_map', _dict2addr_map({'淮安': '淮安市'}))
-    monkeypatch.setattr(addressparser, 'area_map', _dict2addr_map({'清浦区': '清浦区'}))
+    pca, addr = addressparser._full_text_extract('湖北武汉武昌区复兴路111号', 8)
 
-    pca, addr = addressparser._full_text_extract('江苏淮安清浦区人民路111号', 8)
-
-    assert addr == '人民路111号'
-    assert pca.province == '江苏省'
+    assert addr == '复兴路111号'
+    assert pca.province == '湖北省'
     assert pca.province_pos == 0
-    assert pca.city == '淮安市'
+    assert pca.city == '武汉市'
     assert pca.city_pos == 2
-    assert pca.area == '清浦区'
+    assert pca.area == '武昌区'
     assert pca.area_pos == 4
 
 
-def test_full_text_extract2(monkeypatch):
+def test_full_text_extract2():
     """地址在结尾"""
-    monkeypatch.setattr(addressparser, 'province_map', {'江苏': '江苏省'})
-    monkeypatch.setattr(addressparser, 'city_map', _dict2addr_map({'淮安': '淮安市'}))
-    monkeypatch.setattr(addressparser, 'area_map', _dict2addr_map({'清浦区': '清浦区'}))
+    pca, addr = addressparser._full_text_extract('我的家在湖北武汉武昌区', 8)
 
-    pca, addr = addressparser._full_text_extract('我的家在江苏淮安清浦区', 8)
-
-    assert addr == '我的家在江苏淮安清浦区'
-    assert pca.province == '江苏省'
+    assert addr == '我的家在湖北武汉武昌区'
+    assert pca.province == '湖北省'
     assert pca.province_pos == 4
-    assert pca.city == '淮安市'
+    assert pca.city == '武汉市'
     assert pca.city_pos == 6
-    assert pca.area == '清浦区'
+    assert pca.area == '武昌区'
     assert pca.area_pos == 8
 
 
-def test_full_text_extract3(monkeypatch):
+def test_full_text_extract3():
     """地址在中间, 验证地址截取规则:只截取句子开头提取到的地址"""
-    monkeypatch.setattr(addressparser, 'province_map', {'江苏': '江苏省'})
-    monkeypatch.setattr(addressparser, 'city_map', _dict2addr_map({'淮安': '淮安市'}))
-    monkeypatch.setattr(addressparser, 'area_map', _dict2addr_map({'清浦区': '清浦区'}))
-
-    pca, addr = addressparser._full_text_extract('我家的地址是江苏淮安清浦区人民路111号', 8)
-
-    assert addr == '我家的地址是江苏淮安清浦区人民路111号'
-    assert pca.province == '江苏省'
+    pca, addr = addressparser._full_text_extract('我家的地址是湖北武汉武昌区复兴路1号', 8)
+    print(pca, addr)
+    assert addr == '我家的地址是湖北武汉武昌区复兴路1号'
+    assert pca.province == '湖北省'
     assert pca.province_pos == 6
-    assert pca.city == '淮安市'
+    assert pca.city == '武汉市'
     assert pca.city_pos == 8
-    assert pca.area == '清浦区'
+    assert pca.area == '武昌区'
     assert pca.area_pos == 10
 
 
-def test_full_text_extract4(monkeypatch):
+def test_full_text_extract4():
     """测试较小的lookahead"""
-    monkeypatch.setattr(addressparser, 'province_map', {'江苏': '江苏省'})
-    monkeypatch.setattr(addressparser, 'city_map', _dict2addr_map({'淮安': '淮安市'}))
-    monkeypatch.setattr(addressparser, 'area_map', _dict2addr_map({'清浦区': '清浦区'}))
-
-    pca, addr = addressparser._full_text_extract('江苏淮安清浦区人民路111号', 2)
-
-    assert addr == '清浦区人民路111号'
-    assert pca.province == '江苏省'
+    pca, addr = addressparser._full_text_extract('湖北武汉武昌区复兴路1号', 2)
+    print(pca, addr)
+    assert addr == '武昌区复兴路1号'
+    assert pca.province == '湖北省'
     assert pca.province_pos == 0
-    assert pca.city == '淮安市'
+    assert pca.city == '武汉市'
     assert pca.city_pos == 2
     assert pca.area == ''
     assert pca.area_pos == -1
 
 
-def test_full_text_extract4(monkeypatch):
+def test_full_text_extract5():
     """测试满足贪婪匹配模式"""
-    monkeypatch.setattr(addressparser, 'province_map', {'江苏': '江苏省', '江苏省': '江苏省'})
-    monkeypatch.setattr(addressparser, 'city_map', _dict2addr_map({'淮安': '淮安市'}))
-    monkeypatch.setattr(addressparser, 'area_map', _dict2addr_map({'清浦区': '清浦区'}))
-
-    pca, addr = addressparser._full_text_extract('江苏省淮安清浦区人民路111号', 3)
-
-    assert addr == '人民路111号'
-    assert pca.province == '江苏省'
+    pca, addr = addressparser._full_text_extract('湖北武汉武昌区复兴路1号', 3)
+    print(pca, addr)
+    assert addr == '复兴路1号'
+    assert pca.province == '湖北省'
     assert pca.province_pos == 0
-    assert pca.city == '淮安市'
-    assert pca.city_pos == 3
-    assert pca.area == '清浦区'
-    assert pca.area_pos == 5
+    assert pca.city == '武汉市'
+    assert pca.city_pos == 2
+    assert pca.area == '武昌区'
+    assert pca.area_pos == 4
 
 
-def test_handle_one_record1(monkeypatch):
+def test_handle_one_record1():
     """分词模式"""
-    monkeypatch.setattr(addressparser, 'province_map', {'江苏': '江苏省'})
-    monkeypatch.setattr(addressparser, 'city_map', _dict2addr_map({'淮安': '淮安市', '淮安市': '淮安市'}, {'淮安市': '江苏省'}))
-    monkeypatch.setattr(addressparser, 'area_map', _dict2addr_map({'清浦区': '清浦区'}, {'清浦区': '淮安市'}))
-
-    result1 = addressparser._handle_one_record("清浦区人民路111号", {}, True, 0, True, True)
-
+    result1 = addressparser._handle_one_record("江苏淮安市人民路111号", {}, True, 0, True, True)
+    print(result1)
     assert result1["省"] == '江苏省'
     assert result1['市'] == '淮安市'
-    assert result1['区'] == '清浦区'
+    assert result1['区'] == ''
     assert result1['地址'] == '人民路111号'
-    assert result1['省_pos'] == -1
-    assert result1['市_pos'] == -1
-    assert result1['区_pos'] == 0
+    assert result1['省_pos'] == 0
+    assert result1['市_pos'] == 2
+    assert result1['区_pos'] == -1
 
 
-def test_handle_one_record2(monkeypatch):
+def test_handle_one_record2():
     """全文模式"""
-    monkeypatch.setattr(addressparser, 'province_map', {'江苏': '江苏省'})
-    monkeypatch.setattr(addressparser, 'city_map', _dict2addr_map({'淮安': '淮安市', '淮安市': '淮安市'}, {'淮安市': '江苏省'}))
-    monkeypatch.setattr(addressparser, 'area_map', _dict2addr_map({'清浦区': '清浦区'}, {'清浦区': '淮安市'}))
-
-    result1 = addressparser._handle_one_record("清浦区人民路111号", {}, False, 5, True, True)
-
+    result1 = addressparser._handle_one_record("江苏淮安市人民路111号", {}, False, 5, True, True)
+    print(result1)
     assert result1["省"] == '江苏省'
     assert result1['市'] == '淮安市'
-    assert result1['区'] == '清浦区'
+    assert result1['区'] == ''
     assert result1['地址'] == '人民路111号'
-    assert result1['省_pos'] == -1
-    assert result1['市_pos'] == -1
-    assert result1['区_pos'] == 0
+    assert result1['省_pos'] == 0
+    assert result1['市_pos'] == 2
+    assert result1['区_pos'] == -1
 
 
-def test_handle_one_record3(monkeypatch):
+def test_handle_one_record3():
     """省区推断市的模式"""
-    monkeypatch.setattr(addressparser, 'province_map', {'江苏省': '江苏省'})
-    monkeypatch.setattr(addressparser, 'city_map', _dict2addr_map({'淮安市': '淮安市'}))
-    monkeypatch.setattr(addressparser, 'area_map', _dict2addr_map({'清浦区': '清浦区'}, is_unique_value=False))
-    monkeypatch.setattr(addressparser, 'province_area_map',
-                        _dict2addr_map({('江苏省', '清浦区'): ''}, {('江苏省', '清浦区'): '淮安市'}))
-
-    result1 = addressparser._handle_one_record("江苏省清浦区人民路111号", {}, False, 5, True, True)
+    result1 = addressparser._handle_one_record("江苏省清江浦区人民路111号", {}, False, 5, True, True)
 
     assert result1["省"] == '江苏省'
     assert result1['市'] == '淮安市'
-    assert result1['区'] == '清浦区'
+    assert result1['区'] == '清江浦区'
     assert result1['地址'] == '人民路111号'
     assert result1['省_pos'] == 0
     assert result1['市_pos'] == -1

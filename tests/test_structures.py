@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from addressparser import P, C
 
 
 class TestAddrMap(object):
@@ -11,6 +12,7 @@ class TestAddrMap(object):
     @classmethod
     def setup_class(cls):
         from addressparser.structures import AddrMap
+        cls.C = C
         cls.addr_map = AddrMap()
         cls.addr_map.append_relational_addr('淮安', cls.place, cls.C)
         cls.addr_map.append_relational_addr('丽水市', cls.place1, cls.C)
@@ -18,10 +20,12 @@ class TestAddrMap(object):
 
     def test_get_full_name(self):
         full_name = self.addr_map.get_full_name('淮安')
+        print(full_name)
         assert full_name == '淮安市'
 
     def test_get_relational_addrs(self):
         places = self.addr_map.get_relational_addrs('淮安')
+        print(places)
         assert self.place == places[0]
 
     def test_in(self):
@@ -33,7 +37,8 @@ class TestAddrMap(object):
         assert self.addr_map.is_unique_value('杭州市') == False
 
     def test_get_value(self):
-        assert self.addr_map.get_value("丽水市", self.P) == "浙江省"
+        print(self.addr_map.get_value("丽水市", P))
+        assert self.addr_map.get_value("丽水市", P) == "浙江省"
 
 
 class TestPca(object):

@@ -8,7 +8,7 @@ import pandas as pd
 from .structures import AddrMap, Pca
 from .structures import P, C, A
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 
 pwd_path = os.path.abspath(os.path.dirname(__file__))
 pca_path = os.path.join(pwd_path, 'pca.csv')
@@ -50,27 +50,55 @@ def _fill_province_area_map(province_area_map: AddrMap, record_dict):
 
 
 def _fill_area_map(area_map: AddrMap, record_dict):
+    """
+    填充三级区划（区级）地名，包括简称
+    :param area_map: dict
+    :param record_dict: dict
+    :return: area_map
+    """
     area_name = record_dict['qu']
     pca_tuple = (record_dict['sheng'], record_dict['shi'], record_dict['qu'])
     area_map.append_relational_addr(area_name, pca_tuple, A)
-    if area_name.endswith('市'):
+    # 4字区划简称
+    if len(area_name) > 3 and (area_name.endswith('新区') or area_name.endswith('城区') or area_name.endswith('林区')):
+        area_map.append_relational_addr(area_name[:-2], pca_tuple, A)
+    # 3字区划简称
+    elif len(area_name) > 2 and (area_name.endswith('市') or area_name.endswith('区') or area_name.endswith('县')):
         area_map.append_relational_addr(area_name[:-1], pca_tuple, A)
 
 
 def _fill_city_map(city_map: AddrMap, record_dict):
+    """
+    填充二级区划（市级）地名，包括简称
+    :param city_map: dict
+    :param record_dict: dict
+    :return: city_map
+    """
     city_name = record_dict['shi']
     pca_tuple = (record_dict['sheng'], record_dict['shi'], record_dict['qu'])
     city_map.append_relational_addr(city_name, pca_tuple, C)
-    if city_name.endswith('市'):
+    # fix 吉林省、吉林市的混淆
+    if city_name == '吉林市':
+        pass
+    elif city_name.endswith('市'):
         city_map.append_relational_addr(city_name[:-1], pca_tuple, C)
     # 特别行政区
     elif city_name == '香港特别行政区':
         city_map.append_relational_addr('香港', pca_tuple, C)
     elif city_name == '澳门特别行政区':
         city_map.append_relational_addr('澳门', pca_tuple, C)
+    # 自治区下的二级区划，eg喀什地区
+    elif len(city_name) > 3 and city_name.endswith('地区'):
+        city_map.append_relational_addr(city_name[:-2], pca_tuple, C)
 
 
 def _fill_province_map(province_map, record_dict):
+    """
+    填充一级区划（省级）地名，包括简称
+    :param province_map: dict
+    :param record_dict: dict
+    :return: province_map
+    """
     sheng = record_dict['sheng']
     if sheng not in province_map:
         province_map[sheng] = sheng
@@ -106,7 +134,7 @@ munis = {'北京市', '天津市', '上海市', '重庆市'}
 def is_munis(city_full_name):
     return city_full_name in munis
 
-
+# 区级到市级的映射
 myumap = {
     '南关区': '长春市',
     '南山区': '深圳市',
@@ -171,9 +199,9 @@ def _handle_one_record(addr, umap, cut, lookahead, pos_sensitive, open_warning):
 
     # 地名提取
     pca, addr = _extract_addr(addr, cut, lookahead)
-
+    # 填充市
     _fill_city(pca, umap, open_warning)
-
+    # 填充省
     _fill_province(pca)
 
     result = pca.propertys_dict(pos_sensitive)

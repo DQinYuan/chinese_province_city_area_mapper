@@ -58,3 +58,6 @@ class Pca(object):
             result["区_pos"] = self.area_pos
 
         return result
+
+    def __repr__(self):
+        return str(self.propertys_dict(pos_sensitive=False))
