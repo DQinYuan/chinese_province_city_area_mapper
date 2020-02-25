@@ -8,14 +8,15 @@ import argparse
 import addressparser
 
 
-def parse(addresses):
+def parse(addresses, cut=False):
     """
     Turns address list into province, city, country and street.
     :param addresses: list of address
+    :param cut: bool
     :return: list of province, city, country and street
     """
     result = []
-    df = addressparser.transform(addresses, open_warning=False)
+    df = addressparser.transform(addresses, open_warning=False, cut=cut)
 
     for map_key in zip(df["省"], df["市"], df["区"], df["地址"]):
         place = map_key[3]
@@ -40,7 +41,8 @@ def main(**kwargs):
             lines.append(line.strip())
 
     print('{} lines in input'.format(len(lines)))
-    parsed = parse(lines)
+    cut = kwargs['cut'] if 'cut' in kwargs else False
+    parsed = parse(lines, cut=cut)
     count = 0
     with open(kwargs['output'], 'w', encoding='utf-8') as f:
         for i, o in zip(lines, parsed):
@@ -55,6 +57,7 @@ def run():
                         help='the input file path, file encode need utf-8.')
     parser.add_argument('-o', '--output', type=str, required=True,
                         help='the output file path.')
+    parser.add_argument('-c', '--cut', action="store_true", help='use cut mode.')
     args = parser.parse_args()
     main(**vars(args))
 

@@ -15,7 +15,7 @@ def parse(addresses):
     :return: list of province, city, country and street
     """
     result = []
-    df = addressparser.transform(addresses, open_warning=False)
+    df = addressparser.transform(addresses, open_warning=False, cut=False)
 
     for map_key in zip(df["省"], df["市"], df["区"], df["地址"]):
         place = map_key[3]
