@@ -81,7 +81,9 @@ output:
 ```
 
 
-- 全文模式的省市县提取
+- 切词模式的省市县提取
+
+默认采用全文模式，不进行分词，直接全文匹配，这样速度慢，准确率高。
 
 ```python
 location_str = ["浙江省杭州市下城区青云街40号3楼"]
@@ -93,44 +95,46 @@ print(df)
 output:
 
 ```
+   省       市     区         地址
+0  浙江省  杭州市  下城区     青云街40号3楼
+```
+
+
+可以先通过jieba分词，之后做省市区提取及映射，所以我们引入了切词模式，速度很快，使用方法如下:
+```python
+
+location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
+import addressparser
+df = addressparser.transform(location_str, cut=True)
+print(df)
+```
+
+output:
+```
+       省     市    区          地址
+    0 上海市 上海市  徐汇区     虹漕路461号58号楼5楼
+    1 福建省 泉州市  洛江区     万安塘西工业区
+    2 北京市 北京市  朝阳区     北苑华贸城
+```
+
+但可能会出错，如下所示，这种错误的结果是因为jieba本身就将词给分错了：
+```python
+location_str = ["浙江省杭州市下城区青云街40号3楼"]
+import addressparser
+df = addressparser.transform(location_str, cut=True)
+print(df)
+```
+
+output:
+
+```
      省    市      区    地址
 0  浙江省  杭州市  城区  下城区青云街40号3楼
 ```
 
-这种错误的结果是因为jieba本身就将词给分错了，所以我们引入了全文模式，不进行分词，直接全文匹配，使用方法如下:
+> 默认情况下transform方法的cut参数为False，即采用全文匹配的方式，这种方式准确率高，但是速度可能会有慢一点；
+> 如果追求速度而不追求准确率的话，建议将cut设为True，使用切词模式。
 
-
-```python
-location_str = ["浙江省杭州市下城区青云街40号3楼"]
-import addressparser
-df = addressparser.transform(location_str, cut=False)
-print(df)
-```
-
-output:
-
-```
-   省       市     区         地址
-0  浙江省  杭州市  下城区     青云街40号3楼
-```
-> 默认情况下transform方法的cut参数为True，即采用分词匹配的方式，这种方式速度比较快，但是准确率可能会比较低；
-> 如果追求准确率而不追求速度的话，建议将cut设为False。
-
-
-再举一个需要全文匹配的例子：
-
-```python
-import addressparser
-df = addressparser.transform(["11月15日早上9点到11月18日下班前王大猫。在观山湖区"], cut=False, pos_sensitive=True)
-print(df)
-```
-
-output:
-
-```
-    省     市      区        地址                                              省_pos 市_pos 区_pos
-0  贵州省  贵阳市  观山湖区  11月15日早上9点到11月18日下班前王大猫。在观山湖区     -1     -1     25
-```
 
 - 地址经纬度、省市县级联关系查询
 
