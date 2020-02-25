@@ -204,6 +204,7 @@ drawer.echarts_cate_draw(processed, processed["省"], "echarts_cate.html")
 
 ## Command line usage
 - 命令行模式
+
 支持批量提取地址的省市县信息：
 ```
 python3 -m addressparser address_input.csv -o out.csv
