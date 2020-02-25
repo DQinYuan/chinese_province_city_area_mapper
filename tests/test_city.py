@@ -31,7 +31,7 @@ def test_simple_area():
                     "山西晋城市城区开发区怡凤小区凤巢小学对面10号楼"
                     ]
     print('-' * 42)
-    df = addressparser.transform(location_str, cut=True)
+    df = addressparser.transform(location_str)
     print(df)
 
 
@@ -65,7 +65,7 @@ def test_predict_city():
                     "河北北戴河区融合小区11号",
                     ]
     print('-' * 42)
-    df = addressparser.transform(location_str, cut=True)
+    df = addressparser.transform(location_str)
     print(df)
 
     df_str = string_dataframe(addressparser.transform(['河北北戴河区融合小区11号']))
@@ -79,7 +79,7 @@ def test_predict_province():
                     "秦皇岛北戴河区融合小区11号",
                     ]
     print('-' * 42)
-    df = addressparser.transform(location_str, cut=True)
+    df = addressparser.transform(location_str)
     print(df)
 
     df_str = string_dataframe(addressparser.transform(['秦皇岛北戴河区融合小区11号']))
@@ -97,5 +97,5 @@ def test_error_city():
         "吉林白山市临江市城区新市街道鸭绿江花园1号",
     ]
     print('-' * 42)
-    df = addressparser.transform(location_str, cut=True)
+    df = addressparser.transform(location_str)
     print(df)

@@ -22,5 +22,5 @@ def test_error_area():
         "杭州市下城区朝晖路168号钛合国际A座1204室",
     ]
     print('-' * 42)
-    df = addressparser.transform(location_str, cut=True)
+    df = addressparser.transform(location_str)
     print(df)

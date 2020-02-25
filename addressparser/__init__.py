@@ -161,7 +161,7 @@ myumap = {
 }
 
 
-def transform(location_strs, umap=myumap, index=[], cut=True, lookahead=8, pos_sensitive=False, open_warning=True):
+def transform(location_strs, umap=myumap, index=[], cut=False, lookahead=8, pos_sensitive=False, open_warning=True):
     """将地址描述字符串转换以"省","市","区"信息为列的DataFrame表格
         Args:
             locations:地址描述字符集合,可以是list, Series等任意可以进行for in循环的集合
