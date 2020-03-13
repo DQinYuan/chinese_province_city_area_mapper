@@ -17,7 +17,7 @@ def string_dataframe(df):
 def test_simple_area():
     """测试三级区划简称和二级区划简称的匹配"""
     location_str = ["上海市浦东新区虹漕路461号58号楼1楼",
-                    "上海市浦东虹漕路461号58号楼2楼",
+                    "上海市浦东区虹漕路461号58号楼2楼",
                     "上海市浦东虹漕路461号58号楼3楼",
                     "天津滨海祥和小区",
                     "天津滨海区祥和小区",
@@ -30,7 +30,6 @@ def test_simple_area():
                     "湖北武汉武昌区复兴路1号",
                     "山西晋城市城区开发区怡凤小区凤巢小学对面10号楼"
                     ]
-    print('-' * 42)
     df = addressparser.transform(location_str)
     print(df)
 
@@ -87,7 +86,7 @@ def test_predict_province():
     assert df_str == '河北省秦皇岛市北戴河区'
 
 
-def test_error_city():
+def test_error_city_jilin():
     """二级地名出错bug"""
     location_str = [
         "吉林通化市辉南县一中",
@@ -96,6 +95,20 @@ def test_error_city():
         "吉林白山市临江市城区吉林省临江市新市街道鸭绿江花园1号",
         "吉林白山市临江市城区新市街道鸭绿江花园1号",
     ]
-    print('-' * 42)
+    df = addressparser.transform(location_str)
+    print(df)
+
+
+def test_error_city_hainan():
+    """二级地名出错bug"""
+    location_str = [
+        "海南白沙县金波乡金波乡金眉路2号",
+        "海南乐东县九所镇乐东龙栖湾村东侧波波利海岸",
+        "海南乐东黎族自治县九所镇乐东龙栖湾村东侧波波利海岸",
+        "海南乐东县佛罗镇龙沐湾太阳商城C区7号楼",
+        "海南保亭县保城镇七仙岭温泉国家森林公园温泉路8号龙湾雨林谷",
+        "海南保亭县响水镇海南省保亭黎族苗族自治县响水镇2224国道西50米",
+        "河南宽城县祥和小区22号"
+    ]
     df = addressparser.transform(location_str)
     print(df)

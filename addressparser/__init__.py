@@ -8,7 +8,7 @@ import pandas as pd
 from .structures import AddrMap, Pca
 from .structures import P, C, A
 
-__version__ = "0.1.7"
+__version__ = "0.1.8"
 
 pwd_path = os.path.abspath(os.path.dirname(__file__))
 # 区划地址文件
@@ -52,6 +52,29 @@ def _fill_province_area_map(province_area_map: AddrMap, record_dict):
 
 # 过滤混淆区名 '河北北戴河富丽小区1号'
 filter_area_names = ['河北区', '新城区']
+# 处理了部分常见自治县简写
+short_area_names = {
+    '白沙黎族自治县': '白沙县',
+    '昌江黎族自治县': '昌江县',
+    '乐东黎族自治县': '乐东县',
+    '陵水黎族自治县': '陵水县',
+    '保亭黎族苗族自治县': '保亭县',
+    '琼中黎族苗族自治县': '琼中县',
+    '长阳土家族自治县': '长阳县',
+    '五峰土家族自治县': '五峰县',
+    '大通回族土族自治县': '大通县',
+    '民和回族土族自治县': '民和县',
+    '互助土族自治县': '互助县',
+    '化隆回族自治县': '化隆县',
+    '循化撒拉族自治县': '循化县',
+    '青龙满族自治县': '青龙县',
+    '屏边苗族自治县': '屏边县',
+    '金平苗族瑶族傣族自治县': '金平县',
+    '河口瑶族自治县': '河口县',
+    '丰宁满族自治县': '丰宁县',
+    '宽城满族自治县': '宽城县',
+    '围场满族蒙古族自治县': '围场县',
+}
 
 
 def _fill_area_map(area_map: AddrMap, record_dict):
@@ -64,9 +87,13 @@ def _fill_area_map(area_map: AddrMap, record_dict):
     area_name = record_dict['qu']
     pca_tuple = (record_dict['sheng'], record_dict['shi'], record_dict['qu'])
     area_map.append_relational_addr(area_name, pca_tuple, A)
+    # 自治县区划简称
+    if area_name in short_area_names.keys():
+        area_map.append_relational_addr(short_area_names[area_name], pca_tuple, A)
     # 4字区划简称
-    if len(area_name) > 3 and (area_name.endswith('新区') or area_name.endswith('城区') or area_name.endswith('林区')):
+    elif len(area_name) > 3 and (area_name.endswith('新区') or area_name.endswith('城区') or area_name.endswith('林区')):
         area_map.append_relational_addr(area_name[:-2], pca_tuple, A)
+    # 过滤的区划名称
     elif area_name in filter_area_names:
         pass
     # 3字区划简称，'XX区'不简写
@@ -151,8 +178,9 @@ myumap = {
     '南关区': '长春市',
     '南山区': '深圳市',
     '宝山区': '上海市',
-    '市辖区': '东莞市',
     '普陀区': '上海市',
+    '浦东区': '上海市',
+    '市辖区': '东莞市',
     '朝阳区': '北京市',
     '河东区': '天津市',
     '白云区': '广州市',

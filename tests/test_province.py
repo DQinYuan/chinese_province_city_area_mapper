@@ -24,17 +24,3 @@ def test_error_province():
     print('-' * 42)
     df = addressparser.transform(location_str)
     print(df)
-
-
-def test_error_special():
-    """一级地名出错bug"""
-    location_str = [
-        "天津空港经济区环河北路80号空港商务园东区",
-    ]
-    print('-' * 42, '\ncut=False')
-    df = addressparser.transform(location_str, cut=False)
-    print(df)
-
-    print('-' * 42, '\ncut=True')
-    df = addressparser.transform(location_str, cut=True)
-    print(df)
