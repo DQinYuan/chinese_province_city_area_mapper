@@ -209,6 +209,18 @@ drawer.echarts_cate_draw(processed, processed["省"], "echarts_cate.html")
 ```
 python3 -m addressparser address_input.csv -o out.csv
 
+usage: python3 -m addressparser [-h] -o OUTPUT [-c] input
+@description:
+
+positional arguments:
+  input                 the input file path, file encode need utf-8.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -o OUTPUT, --output OUTPUT
+                        the output file path.
+  -c, --cut             use cut mode.
+
 ```
 > 输入文件：`address_input.csv`；输出文件：`out.csv`，省市县地址以`\t`间隔
 
