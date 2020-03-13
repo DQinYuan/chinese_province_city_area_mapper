@@ -63,7 +63,7 @@ def test_cut_custom_dict():
     for i in location_str:
         o = jieba.lcut(i)
         print(i, o)
-    print('-'*42)
+    print('-' * 42)
     jieba.set_dictionary(d_path)
     for i in location_str:
         o = jieba.lcut(i)

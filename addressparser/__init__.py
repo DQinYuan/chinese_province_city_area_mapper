@@ -189,7 +189,7 @@ myumap = {
 }
 
 
-def transform(location_strs, umap=myumap, index=[], cut=False, lookahead=8, pos_sensitive=False, open_warning=True):
+def transform(location_strs, umap=myumap, index=[], cut=False, lookahead=8, pos_sensitive=False, open_warning=False):
     """将地址描述字符串转换以"省","市","区"信息为列的DataFrame表格
         Args:
             locations:地址描述字符集合,可以是list, Series等任意可以进行for in循环的集合
@@ -201,7 +201,7 @@ def transform(location_strs, umap=myumap, index=[], cut=False, lookahead=8, pos_
                       默认值为8是为了能够发现"新疆维吾尔族自治区"这样的长地名
                       如果你的样本中都是短地名的话，可以考虑把这个数字调小一点以提高性能
             pos_sensitive:如果为True则会多返回三列，分别提取出的省市区在字符串中的位置，如果字符串中不存在的话则显示-1
-            open_warning: 是否打开umap警告, 默认打开
+            open_warning: 是否打开umap警告, 默认关闭
         Returns:
             一个Pandas的DataFrame类型的表格，如下：
                |省    |市   |区    |地址                 |
@@ -246,7 +246,6 @@ def _handle_one_record(addr, umap, cut, lookahead, pos_sensitive, open_warning):
 
     result = pca.propertys_dict(pos_sensitive)
     result["地址"] = left_addr
-
     return result
 
 
@@ -324,6 +323,9 @@ def _jieba_extract(addr):
     return result, addr[truncate:]
 
 
+filter_address_chars = ['路', '街', '村', '桥']
+
+
 def _full_text_extract(addr, lookahead):
     """全文匹配进行提取"""
     result = Pca()
@@ -352,11 +354,16 @@ def _full_text_extract(addr, lookahead):
         defer_fun = None
         # l为从起始位置开始的长度,从中提取出最长的地址
         for length in range(1, lookahead + 1):
-            if i + length > len(addr):
+            end_pos = i + length
+            if end_pos > len(addr):
                 break
-            word = addr[i:i + length]
+            word = addr[i:end_pos]
+            word_next = addr[end_pos] if end_pos < len(addr) else ''
+
             # 优先提取低级别的行政区 (主要是为直辖市和特别行政区考虑)
-            if word in area_map:
+            if word_next in filter_address_chars:
+                continue
+            elif word in area_map:
                 defer_fun = _set_pca('area', i, word, area_map.get_full_name(word))
                 continue
             elif word in city_map:

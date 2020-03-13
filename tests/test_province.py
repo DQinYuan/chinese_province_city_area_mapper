@@ -7,7 +7,7 @@ import addressparser
 
 
 def test_error_province():
-    """一级地名出错bug"""
+    """一级地名出错bug修复"""
     location_str = [
         "宁波市江东区兴宁路42弄1号金汇大厦12楼",
         "天津空港经济区环河北路80号空港商务园东区",
@@ -22,5 +22,14 @@ def test_error_province():
         "珠江新城广晟国际大厦801室",
     ]
     print('-' * 42)
+    df = addressparser.transform(location_str)
+    print(df)
+
+
+def test_place():
+    """级联地名出错bug"""
+    location_str = [
+        "天津空港经济区环河北路80号空港商务园东区",
+    ]
     df = addressparser.transform(location_str)
     print(df)

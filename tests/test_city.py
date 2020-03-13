@@ -55,7 +55,6 @@ def test_city_detail_2():
 def test_city_detail_3():
     df_str = string_dataframe(addressparser.transform(['山西晋城市城区开发区怡凤小区凤巢小学对面10号楼']))
     print(df_str)
-    # assert df_str == '山西省晋城市城区'
 
 
 def test_predict_city():
@@ -87,7 +86,7 @@ def test_predict_province():
 
 
 def test_error_city_jilin():
-    """二级地名出错bug"""
+    """二级地名出错bug修复"""
     location_str = [
         "吉林通化市辉南县一中",
         "吉林通化市辉南县11号",
@@ -100,15 +99,17 @@ def test_error_city_jilin():
 
 
 def test_error_city_hainan():
-    """二级地名出错bug"""
+    """二级地名出错bug修复"""
     location_str = [
+        "河北石家庄市桥西区校区公路11号",
         "海南白沙县金波乡金波乡金眉路2号",
         "海南乐东县九所镇乐东龙栖湾村东侧波波利海岸",
         "海南乐东黎族自治县九所镇乐东龙栖湾村东侧波波利海岸",
         "海南乐东县佛罗镇龙沐湾太阳商城C区7号楼",
         "海南保亭县保城镇七仙岭温泉国家森林公园温泉路8号龙湾雨林谷",
         "海南保亭县响水镇海南省保亭黎族苗族自治县响水镇2224国道西50米",
-        "河南宽城县祥和小区22号"
+        "河南宽城县祥和小区22号",
+
     ]
     df = addressparser.transform(location_str)
     print(df)
