@@ -35,6 +35,7 @@ def assert_addr(addr_df: pd.DataFrame, pos_sensitive=False):
     _assert_line(6, "上海市", "市辖区", "浦东新区", "东明路街道三林路15号", "310115", 0, -1, 3)
     _assert_line(7, "贵州省", "黔南布依族苗族自治州", "长顺县", "长寨街道和平中路28号", "522729", 0, 3, 13)
     _assert_line(8, "宁夏回族自治区", None, None, "", "640000", 0, -1, -1)
+    _assert_line(9, "江苏省", "淮安市", "市辖区", "", "320801", -1, 0, 3)
 
 
 def test_transform():
@@ -44,7 +45,8 @@ def test_transform():
                  '我家的地址是江苏淮安清江浦区上海路111号',
                  "上海市浦东新区东明路街道三林路15号",
                  "贵州省黔南布依族苗族自治州长顺县长寨街道和平中路28号",
-                 "宁夏"]
+                 "宁夏",
+                 "淮安市市辖区"]
     transed = cpca.transform(addr_list)
     assert_addr(transed)
 
