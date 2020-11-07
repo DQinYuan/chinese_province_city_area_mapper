@@ -463,7 +463,7 @@ drawer.draw_locations(processed, "processed.html")
 在使用本函数之前需要先用如下命令安装它的依赖（为了减少本模块的体积，所以这些依赖不会被自动安装）：
 
 ```
-pip install pyecharts
+pip install pyecharts==0.5.11
 pip install echarts-countries-pypkg
 pip install pyecharts-snapshot
 ```

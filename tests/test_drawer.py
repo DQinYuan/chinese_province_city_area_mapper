@@ -9,15 +9,15 @@ df = cpca.transform(origin_addr['原始地址'])
 
 def test_draw_locations():
     """使用folium绘制热力图"""
-    drawer.draw_locations(df, "df.html")
+    drawer.draw_locations(df[cpca._ADCODE], "df.html")
 
 
 def test_echarts_draw():
     """使用echarts绘制热力图"""
-    drawer.echarts_draw(df,
+    drawer.echarts_draw(df[cpca._ADCODE],
                         "df_echarts.html", title="地域分布图", subtitle="location distribute")
 
 
 def test_echarts_cate_draw():
     """使用echarts绘制分类散点图"""
-    drawer.echarts_cate_draw(df, df['省'], "df_echarts_cate.html")
+    drawer.echarts_cate_draw(df[cpca._ADCODE], df['省'], "df_echarts_cate.html")
