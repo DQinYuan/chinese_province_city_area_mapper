@@ -7,7 +7,7 @@ from .structures import P, C, A
 from .matcher import Matcher
 import ahocorasick
 
-VERSION = (0, 5, 0)
+VERSION = (0, 5, 1)
 
 __version__ = ".".join([str(x) for x in VERSION])
 
