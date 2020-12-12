@@ -24,6 +24,17 @@
 
 如果觉得本模块对你有用的话，施舍个star，谢谢。
 
+常见安装问题：
+
+在 windows 上可能会出现类似如下问题
+
+```
+Building wheel for pyahocorasick (setup.py) ... error
+```
+
+先去下载  [Microsoft Visual C++ Build Tools](https://link.zhihu.com/?target=http%3A//go.microsoft.com/fwlink/%3FLinkId%3D691126)，
+安装完成后，再重新使用 pip install cpca 安装，即可解决问题
+
 # 中国行政区划分数据获取
 
 提取自 @Vonng 维护的项目 [adcode](https://github.com/Vonng/adcode)，里面包含中国的所有行政区划和编码

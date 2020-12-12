@@ -65,7 +65,6 @@ class AddrInfo:
 # 之所以 区 和 县 不作为停用词，是因为 区县 数目太多, 去掉 "区" 字 或者 "县" 字后很容易误配
 def _init_data(stop_key="([省市]|特别行政区|自治区)$") -> (dict, Matcher):
     ad_map = {}
-    ac = ahocorasick.Automaton()
     matcher = Matcher(stop_key)
     from pkg_resources import resource_stream
     with resource_stream('cpca.resources', 'adcodes.csv') as csv_stream:
