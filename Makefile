@@ -5,4 +5,7 @@ sync:
 local-sync:
 	pipenv run python local-sync.py $(ADCODE_DIR)
 
+test:
+	pipenv run python setup.py test
+
 .PHONY: sync local-sync
