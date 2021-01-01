@@ -126,7 +126,7 @@ df
 ```python
 from cpca import drawer
 #df为上一段代码输出的df
-drawer.draw_locations(df, "df.html")
+drawer.draw_locations(df[cpca._ADCODE], "df.html")
 ```
 
 这一段代码运行结束后会在运行代码的当前目录下生成一个df.html文件，用浏览器打开即可看到
@@ -242,7 +242,7 @@ processed.to_csv("processed.csv", index=False, encoding="utf-8")
 ```python
 from cpca import drawer
 #processed为上一段代码的processed
-drawer.draw_locations(processed, "processed.html")
+drawer.draw_locations(processed[cpca._ADCODE], "processed.html")
 ```
 
 用浏览器打开"processed.html"文件，发现绘制的局部图像如下（在国内folium的地图显示速度比较慢，所以需要耐心等待地图显示）：
@@ -266,7 +266,7 @@ pip install pyecharts-snapshot
 示例代码如下，仍然使用之前的测试数据生成的processed变量：
 ```python
 from cpca import drawer
-drawer.echarts_draw(processed, "echarts.html")
+drawer.echarts_draw(processed[cpca._ADCODE], "echarts.html")
 ```
 
 该接口的更多参数及其含义如下：
@@ -294,7 +294,7 @@ def echarts_draw(locations, file_path, title="地域分布图"
 
 ```python
 from cpca import drawer
-drawer.echarts_cate_draw(processed, processed["省"], "echarts_cate.html")
+drawer.echarts_cate_draw(processed[cpca._ADCODE], processed["省"], "echarts_cate.html")
 ```
 
 然后会在当前目录下生成一个echarts_cate.html文件，用浏览器打开后即可看到图像：
