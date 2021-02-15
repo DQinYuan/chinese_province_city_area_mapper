@@ -88,7 +88,7 @@ def _init_data(stop_key="([省市]|特别行政区|自治区)$") -> (dict, Match
 ad_2_addr_dict, matcher = _init_data()
 
 
-def transform(location_strs, index=None, pos_sensitive=False):
+def transform(location_strs, index=None, pos_sensitive=False, umap={}):
     """将地址描述字符串转换以"省","市","区"信息为列的DataFrame表格
         Args:
             locations:地址描述字符集合,可以是list, Series等任意可以进行for in循环的集合
@@ -110,7 +110,7 @@ def transform(location_strs, index=None, pos_sensitive=False):
 
     import pandas as pd
     result = pd.DataFrame(
-             [_handle_one_record(sentence, pos_sensitive) for sentence in location_strs],
+             [_handle_one_record(sentence, pos_sensitive, umap) for sentence in location_strs],
              index=index)
 
     # 这句的唯一作用是让列的顺序好看一些
@@ -146,7 +146,7 @@ def pos_setter(pos_sensitive):
     return set_pos if pos_sensitive else empty
 
 
-def _handle_one_record(sentence, pos_sensitive) -> dict:
+def _handle_one_record(sentence, pos_sensitive, umap) -> dict:
     """处理一条记录"""
     # 空记录
     if not isinstance(sentence, str) or sentence == '' or sentence is None:
@@ -160,7 +160,9 @@ def _handle_one_record(sentence, pos_sensitive) -> dict:
     adcode = None
     truncate_index = -1
     for match_info in matcher.iter(sentence):
-        cur_addr = match_info.get_match_addr(last_info)
+        # 当没有省市等上级地区限制时, 优先选择的区的 adcode
+        first_adcode = umap.get(match_info.origin_value)
+        cur_addr = match_info.get_match_addr(last_info, first_adcode)
         if cur_addr:
             set_pos(res, match_info.get_rank(), match_info.start_index)
             last_info = cur_addr

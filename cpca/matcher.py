@@ -4,14 +4,20 @@ import re
 
 class MatchInfo:
 
-    def __init__(self, attr_infos, start_index, end_index) -> None:
+    def __init__(self, attr_infos, start_index, end_index, origin_value) -> None:
         self.attr_infos = attr_infos
         self.start_index = start_index
         self.end_index = end_index
+        self.origin_value = origin_value
 
-    def get_match_addr(self, parent_addr):
-        return next(filter(lambda attr: attr.belong_to(parent_addr), self.attr_infos), None) if parent_addr \
-            else self.attr_infos[0]
+    def get_match_addr(self, parent_addr, first_adcode=None):
+        if parent_addr:
+            return next(filter(lambda attr: attr.belong_to(parent_addr), self.attr_infos), None)
+        elif first_adcode:
+            res = next(filter(lambda attr: attr.adcode == first_adcode, self.attr_infos), None)
+            return res if res else self.attr_infos[0]
+        else:
+            return self.attr_infos[0]
 
     def get_rank(self):
         return self.attr_infos[0].rank
@@ -64,7 +70,7 @@ class Matcher:
         for end_index, (original_value, attr_infos) in self.ac.iter(sentence):
             # start_index 和 end_index 是左闭右闭的
             start_index = end_index - len(original_value) + 1
-            cur_match_info = MatchInfo(attr_infos, start_index, end_index)
+            cur_match_info = MatchInfo(attr_infos, start_index, end_index, original_value)
             # 如果遇到的是全称, 会匹配到两次, 简称一次, 全称一次,所以要处理下
             if prev_match_info is not None:
                 yield cur_match_info if start_index == prev_start_index else prev_match_info
