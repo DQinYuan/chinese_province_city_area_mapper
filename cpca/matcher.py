@@ -25,6 +25,9 @@ class MatchInfo:
     def get_one_addr(self):
         return self.attr_infos[0]
 
+    def __repr__(self) -> str:
+        return "from {} to {} value {}".format(self.start_index, self.end_index, self.origin_value)
+
 
 class Matcher:
 
@@ -73,9 +76,15 @@ class Matcher:
             cur_match_info = MatchInfo(attr_infos, start_index, end_index, original_value)
             # 如果遇到的是全称, 会匹配到两次, 简称一次, 全称一次,所以要处理下
             if prev_match_info is not None:
-                yield cur_match_info if start_index == prev_start_index else prev_match_info
+                if start_index == prev_start_index:
+                    yield cur_match_info
+                    prev_match_info = None
+                else:
+                    yield prev_match_info
+                    prev_match_info = cur_match_info
+            else:
+                prev_match_info = cur_match_info
             prev_start_index = start_index
-            prev_match_info = cur_match_info
 
         if prev_match_info is not None:
             yield prev_match_info

@@ -24,6 +24,7 @@ def assert_addr(addr_df: pd.DataFrame, pos_sensitive=False):
     _assert_line(addr_df, pos_sensitive, 7, "贵州省", "黔南布依族苗族自治州", "长顺县", "长寨街道和平中路28号", "522729", 0, 3, 13)
     _assert_line(addr_df, pos_sensitive, 8, "宁夏回族自治区", None, None, "", "640000", 0, -1, -1)
     _assert_line(addr_df, pos_sensitive, 9, "江苏省", "淮安市", "市辖区", "", "320801", -1, 0, 3)
+    _assert_line(addr_df, pos_sensitive, 10, None, None, None, None, None, -1, -1, -1)
 
 
 def test_transform():
@@ -34,7 +35,9 @@ def test_transform():
                  "上海市浦东新区东明路街道三林路15号",
                  "贵州省黔南布依族苗族自治州长顺县长寨街道和平中路28号",
                  "宁夏",
-                 "淮安市市辖区"]
+                 "淮安市市辖区",
+                 # 测试错误数据
+                 32323]
     transed = cpca.transform(addr_list)
     assert_addr(transed)
 
@@ -44,9 +47,23 @@ def test_transform():
 
 
 def test_umap():
-    addr = "朝阳区汉庭酒店大山子店"
-    transed = cpca.transform([addr], umap={"朝阳区": "110105"})
+    addrs = ["朝阳区汉庭酒店大山子店", "吉林省朝阳区不知道店"]
+    transed = cpca.transform(addrs, umap={"朝阳区": "110105"})
     _assert_line(transed, False, 0, "北京市", "市辖区", "朝阳区", "汉庭酒店大山子店", "110105", -1, -1, 0)
+    _assert_line(transed, False, 1, "吉林省", "长春市", "朝阳区", "不知道店", "220104", 0, -1, 3)
+
+
+def test_transform_text_with_addrs():
+    addrs_text = "你家在吉林省朝阳区，而我家在北京市朝阳区，太远了"
+    addr_df = cpca.transform_text_with_addrs(addrs_text, pos_sensitive=True)
+    _assert_line(addr_df, True, 0, "吉林省", "长春市", "朝阳区", "", "220104", 3, -1, 6)
+    _assert_line(addr_df, True, 1, "北京市", "市辖区", "朝阳区", "", "110105", 14, -1, 17)
+
+    addrs_text = "吉林省北京市鼓楼区"
+    addr_df = cpca.transform_text_with_addrs(addrs_text, pos_sensitive=True, umap={"鼓楼区": "320106"})
+    _assert_line(addr_df, True, 0, "吉林省", None, None, "", "220000", 0, -1, -1)
+    _assert_line(addr_df, True, 1, "北京市", None, None, "", "110000", 3, -1, -1)
+    _assert_line(addr_df, True, 2, "江苏省", "南京市", "鼓楼区", "", "320106", -1, -1, 6)
 
 
 def mock_map(monkeypatch, attrname, return_value, is_contain = True, is_unique_value = True):

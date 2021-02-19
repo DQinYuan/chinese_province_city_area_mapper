@@ -95,6 +95,7 @@ def transform(location_strs, index=None, pos_sensitive=False, umap={}):
                       比如:["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区"]
             index:可以通过这个参数指定输出的DataFrame的index,默认情况下是range(len(data))
             pos_sensitive:如果为True则会多返回三列，分别提取出的省市区在字符串中的位置，如果字符串中不存在的话则显示-1
+            umap: 当只有区的信息时， 且该区存在同名时， 指定该区具体是哪一个，字典的 key 为区名，value 为 adcode， 比如 {"朝阳区": "110105"}
         Returns:
             一个Pandas的DataFrame类型的表格，如下：
                |省    |市   |区    |地址                 |adcode   |
@@ -110,15 +111,34 @@ def transform(location_strs, index=None, pos_sensitive=False, umap={}):
 
     import pandas as pd
     result = pd.DataFrame(
-             [_handle_one_record(sentence, pos_sensitive, umap) for sentence in location_strs],
+             [_get_one_addr(sentence, pos_sensitive, umap) for sentence in location_strs],
              index=index)
 
-    # 这句的唯一作用是让列的顺序好看一些
+    return tidy_order(result, pos_sensitive)
+
+
+def transform_text_with_addrs(text_with_addrs, index=None, pos_sensitive=False, umap={}):
+    """将含有多个地址的长文本中的地址全部提取出来
+         Args:
+             text_with_addrs: 一个字符串，里面可能含有多个地址
+             index:可以通过这个参数指定输出的DataFrame的index,默认情况下是range(len(data))
+             pos_sensitive:如果为True则会多返回三列，分别提取出的省市区在字符串中的位置，如果字符串中不存在的话则显示-1
+             umap: 当只有区的信息时， 且该区存在同名时， 指定该区具体是哪一个，字典的 key 为区名，value 为 adcode， 比如 {"朝阳区": "110105"}
+    """
+    import pandas as pd
+    result = pd.DataFrame(_extract_addrs(text_with_addrs, pos_sensitive, umap, truncate_pos=False,
+                                         new_entry_when_not_belong=True),
+                          index=index)
+    return tidy_order(result, pos_sensitive)
+
+
+def tidy_order(df, pos_sensitive):
+    """整理顺序,唯一作用是让列的顺序好看一些"""
     if pos_sensitive:
-        return result.loc[:, (_PROVINCE, _CITY, _COUNTY, _ADDR, _ADCODE, _PROVINCE_POS, _CITY_POS,
+        return df.loc[:, (_PROVINCE, _CITY, _COUNTY, _ADDR, _ADCODE, _PROVINCE_POS, _CITY_POS,
                               _COUNTY_POS)]
     else:
-        return result.loc[:, (_PROVINCE, _CITY, _COUNTY, _ADDR, _ADCODE)]
+        return df.loc[:, (_PROVINCE, _CITY, _COUNTY, _ADDR, _ADCODE)]
 
 
 class MatchInfo:
@@ -146,11 +166,16 @@ def pos_setter(pos_sensitive):
     return set_pos if pos_sensitive else empty
 
 
-def _handle_one_record(sentence, pos_sensitive, umap) -> dict:
-    """处理一条记录"""
+def _get_one_addr(sentence, pos_sensitive, umap):
+    return next(_extract_addrs(sentence, pos_sensitive, umap))
+
+
+def _extract_addrs(sentence, pos_sensitive, umap, truncate_pos=True, new_entry_when_not_belong=False) -> dict:
+    """提取出 sentence 中的所有地址"""
     # 空记录
     if not isinstance(sentence, str) or sentence == '' or sentence is None:
-        return empty_record(pos_sensitive)
+        yield empty_record(pos_sensitive)
+        return
 
     set_pos = pos_setter(pos_sensitive)
 
@@ -170,15 +195,35 @@ def _handle_one_record(sentence, pos_sensitive, umap) -> dict:
             truncate_index = match_info.end_index
             # 匹配到了县级就停止
             if cur_addr.rank == AddrInfo.RANK_COUNTY:
-                break
+                update_res_by_adcode(res, adcode)
+                res[_ADDR] = sentence[truncate_index + 1:] if truncate_pos else ""
+                res[_ADCODE] = adcode
+                yield res
+                res = empty_record(pos_sensitive)
+                last_info = None
+                adcode = None
+                truncate_index = -1
+        elif new_entry_when_not_belong:
+            # 当找不到可以匹配的地址时,新建新的数据项
+            update_res_by_adcode(res, adcode)
+            res[_ADDR] = sentence[truncate_index + 1:] if truncate_pos else ""
+            res[_ADCODE] = adcode
+            yield res
+            addr = match_info.get_match_addr(None, first_adcode)
+            res = empty_record(pos_sensitive)
+            set_pos(res, match_info.get_rank(), match_info.start_index)
+            last_info = addr
+            adcode = addr.adcode
+            truncate_index = match_info.end_index
 
     if adcode is None:
-        return res
+        yield res
+        return
 
     update_res_by_adcode(res, adcode)
-    res[_ADDR] = sentence[truncate_index+1:]
+    res[_ADDR] = sentence[truncate_index + 1:] if truncate_pos else ""
     res[_ADCODE] = adcode
-    return res
+    yield res
 
 
 def _fill_adcode(adcode):

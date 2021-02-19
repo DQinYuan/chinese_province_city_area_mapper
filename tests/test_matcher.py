@@ -8,6 +8,8 @@ def test_matcher():
     matcher.add_addr_info(AddrInfo("不测自治区", "111111000000", 1, 1))
     matcher.add_addr_info(AddrInfo("测试区", "111112000000", 1, 1))
     matcher.add_addr_info(AddrInfo("测试区", "111113000000", 3, 2))
+    matcher.add_addr_info(AddrInfo("吉林省", "220000000000", 1, 1))
+    matcher.add_addr_info(AddrInfo("北京市", "110000000000", 2, 2))
 
     matcher.complete_add()
 
@@ -18,6 +20,7 @@ def test_matcher():
     assert res[0].end_index == 1
 
     res = list(matcher.iter("不测自治区"))
+    assert len(res) == 1
     assert res[0].end_index == 4
 
     res = list(matcher.iter("测试区"))
