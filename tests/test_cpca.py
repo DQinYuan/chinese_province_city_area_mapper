@@ -70,6 +70,12 @@ def test_transform_text_with_addrs():
     _assert_line(addr_df, True, 0, "天津市", None, None, "", "120000", 0, -1, -1)
     assert len(addr_df) == 1
 
+    addrs_text = "分店位于徐汇区虹漕路461号58号楼5楼和泉州市洛江区万安塘西工业区以及南京鼓楼区"
+    addr_df = cpca.transform_text_with_addrs(addrs_text, pos_sensitive=True)
+    assert len(addr_df) == 3
+    _assert_line(addr_df, True, 0, "上海市", "市辖区", "徐汇区", "", "310104", -1, -1, 4)
+    _assert_line(addr_df, True, 1, "福建省", "泉州市", "洛江区", "", "350504", -1, 21, 24)
+
 
 def mock_map(monkeypatch, attrname, return_value, is_contain = True, is_unique_value = True):
     mock_map = MagicMock()
