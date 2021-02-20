@@ -70,9 +70,13 @@ class Matcher:
     def iter(self, sentence):
         prev_start_index = None
         prev_match_info = None
+        prev_end_index = None
         for end_index, (original_value, attr_infos) in self.ac.iter(sentence):
             # start_index 和 end_index 是左闭右闭的
             start_index = end_index - len(original_value) + 1
+            if prev_end_index is not None and end_index <= prev_end_index:
+                continue
+
             cur_match_info = MatchInfo(attr_infos, start_index, end_index, original_value)
             # 如果遇到的是全称, 会匹配到两次, 简称一次, 全称一次,所以要处理下
             if prev_match_info is not None:
@@ -85,6 +89,7 @@ class Matcher:
             else:
                 prev_match_info = cur_match_info
             prev_start_index = start_index
+            prev_end_index = end_index
 
         if prev_match_info is not None:
             yield prev_match_info

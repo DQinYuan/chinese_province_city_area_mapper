@@ -5,9 +5,8 @@
 from .structures import AddrMap, Pca
 from .structures import P, C, A
 from .matcher import Matcher
-import ahocorasick
 
-VERSION = (0, 5, 1)
+VERSION = (0, 5, 4)
 
 __version__ = ".".join([str(x) for x in VERSION])
 

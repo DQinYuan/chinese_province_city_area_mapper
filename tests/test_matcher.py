@@ -10,6 +10,9 @@ def test_matcher():
     matcher.add_addr_info(AddrInfo("测试区", "111113000000", 3, 2))
     matcher.add_addr_info(AddrInfo("吉林省", "220000000000", 1, 1))
     matcher.add_addr_info(AddrInfo("北京市", "110000000000", 2, 2))
+    matcher.add_addr_info(AddrInfo("京市", "110100000000", 2, 2))
+    matcher.add_addr_info(AddrInfo("天津市", "120000000000", 2, 2))
+    matcher.add_addr_info(AddrInfo("津市市", "120100000000", 2, 2))
 
     matcher.complete_add()
 
@@ -31,3 +34,11 @@ def test_matcher():
 
     res = list(matcher.iter("哈哈"))
     assert len(res) == 0
+
+    res = list(matcher.iter("天津市"))
+    assert len(res) == 1
+    assert res[0].get_one_addr().name == "天津市"
+
+    res = list(matcher.iter("北京市"))
+    assert len(res) == 1
+    assert res[0].get_one_addr().name == "北京市"
