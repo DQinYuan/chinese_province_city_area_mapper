@@ -53,7 +53,7 @@ Building wheel for pyahocorasick (setup.py) ... error
 笔者会定期从 adcode 中同步，如果同步的不及时，可以使用本仓库中的 [local-sync.py](local-sync.py) 脚本进行同步，使用方法如下：
 
 ```shell
-git clone git@github.com:Vonng/adcode.git
+git clone https://github.com/Vonng/adcode.git
 python local-sync.py <adcode所在目录>
 ```
 
