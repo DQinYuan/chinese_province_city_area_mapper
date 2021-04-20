@@ -8,7 +8,7 @@ import pandas as pd
 from .structures import AddrMap, Pca
 from .structures import P, C, A
 
-__version__ = "0.1.8"
+__version__ = "0.1.9"
 
 pwd_path = os.path.abspath(os.path.dirname(__file__))
 # 区划地址文件
@@ -204,7 +204,7 @@ def transform(location_strs, umap=myumap, index=[], cut=False, lookahead=8, pos_
             open_warning: 是否打开umap警告, 默认关闭
         Returns:
             一个Pandas的DataFrame类型的表格，如下：
-               |省    |市   |区    |地址                 |
+               |省    |市   |区    |地名                 |
                |上海市|上海市|徐汇区|虹漕路461号58号楼5楼  |
                |福建省|泉州市|洛江区|万安塘西工业区        |
     """
@@ -220,9 +220,9 @@ def transform(location_strs, umap=myumap, index=[], cut=False, lookahead=8, pos_
         [_handle_one_record(addr, umap, cut, lookahead, pos_sensitive, open_warning) for addr in location_strs])
     # 这句的唯一作用是让列的顺序好看一些
     if pos_sensitive:
-        return result.loc[:, ('省', '市', '区', '地址', '省_pos', '市_pos', '区_pos')]
+        return result.loc[:, ('省', '市', '区', '地名', '省_pos', '市_pos', '区_pos')]
     else:
-        return result.loc[:, ('省', '市', '区', '地址')]
+        return result.loc[:, ('省', '市', '区', '地名')]
 
 
 def _handle_one_record(addr, umap, cut, lookahead, pos_sensitive, open_warning):

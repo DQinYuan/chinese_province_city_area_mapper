@@ -17,7 +17,7 @@ def parse(addresses):
     result = []
     df = addressparser.transform(addresses, open_warning=False, cut=False)
 
-    for map_key in zip(df["省"], df["市"], df["区"], df["地址"]):
+    for map_key in zip(df["省"], df["市"], df["区"], df["地名"]):
         place = map_key[3]
         if not isinstance(place, str):
             place = ''
