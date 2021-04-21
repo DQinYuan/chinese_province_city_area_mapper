@@ -12,7 +12,7 @@ def assert_addr(addr_df: pd.DataFrame, pos_sensitive=False):
         assert addr_df.loc[linenum, '省'] == province
         assert addr_df.loc[linenum, '市'] == city
         assert addr_df.loc[linenum, '区'] == area
-        assert addr_df.loc[linenum, '地址'] == addr
+        assert addr_df.loc[linenum, '地名'] == addr
         if pos_sensitive:
             assert addr_df.loc[linenum, '省_pos'] == province_pos
             assert addr_df.loc[linenum, '市_pos'] == city_pos
@@ -179,7 +179,7 @@ def test_handle_one_record1():
     assert result1["省"] == '江苏省'
     assert result1['市'] == '淮安市'
     assert result1['区'] == ''
-    assert result1['地址'] == '人民路111号'
+    assert result1['地名'] == '人民路111号'
     assert result1['省_pos'] == 0
     assert result1['市_pos'] == 2
     assert result1['区_pos'] == -1
@@ -192,7 +192,7 @@ def test_handle_one_record2():
     assert result1["省"] == '江苏省'
     assert result1['市'] == '淮安市'
     assert result1['区'] == ''
-    assert result1['地址'] == '人民路111号'
+    assert result1['地名'] == '人民路111号'
     assert result1['省_pos'] == 0
     assert result1['市_pos'] == 2
     assert result1['区_pos'] == -1
@@ -205,7 +205,7 @@ def test_handle_one_record3():
     assert result1["省"] == '江苏省'
     assert result1['市'] == '淮安市'
     assert result1['区'] == '清江浦区'
-    assert result1['地址'] == '人民路111号'
+    assert result1['地名'] == '人民路111号'
     assert result1['省_pos'] == 0
     assert result1['市_pos'] == -1
     assert result1['区_pos'] == 3

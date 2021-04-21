@@ -245,7 +245,7 @@ def _handle_one_record(addr, umap, cut, lookahead, pos_sensitive, open_warning):
     _fill_province(pca)
 
     result = pca.propertys_dict(pos_sensitive)
-    result["地址"] = left_addr
+    result["地名"] = left_addr
     return result
 
 
