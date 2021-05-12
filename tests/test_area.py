@@ -3,8 +3,11 @@
 @author:XuMing（xuming624@qq.com)
 @description: 
 """
+import sys
 
+sys.path.append('..')
 import addressparser
+
 
 def test_error_area():
     """3级地名出错bug"""
