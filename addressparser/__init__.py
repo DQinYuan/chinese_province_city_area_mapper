@@ -13,7 +13,7 @@ import pandas as pd
 from .structures import AddrMap, Pca
 from .structures import P, C, A
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 pwd_path = os.path.abspath(os.path.dirname(__file__))
 # 区划地址文件
@@ -52,12 +52,9 @@ def _data_from_csv():
     latlng = {}
     # 数据约定:国家直辖市的sheng字段为直辖市名称, 省直辖县的city字段为空
 
-    # with open(pca_path, 'r', encoding='utf-8') as f:
-    # import csv
-    # pca_csv = csv.DictReader(f)
-    pca_csv = pd.read_csv(pca_path, sep=',', header=0, encoding='utf-8')
-    pca_csv = pca_csv.fillna('')
-    for record_dict in pca_csv.values:
+    pca_df = pd.read_csv(pca_path, sep=',', header=0, encoding='utf-8')
+    pca_df = pca_df.fillna('')
+    for record_dict in pca_df.values:
         # latlng[(record_dict['sheng'], record_dict['shi'], record_dict['qu'])] =
         # (record_dict['lat'], record_dict['lng'])
         record_dict = [convert_to_unicode(i) if i is isinstance(i, text_type) else i for i in record_dict]

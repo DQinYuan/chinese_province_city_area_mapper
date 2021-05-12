@@ -3,16 +3,13 @@
 from __future__ import print_function
 
 import os
-import sys
+from codecs import open
 
 from setuptools import setup, find_packages
 
 import addressparser
 
 here = os.path.abspath(os.path.dirname(__file__))
-
-if sys.version_info < (3,):
-    sys.exit('Sorry, Python3 is required.')
 
 with open('README.md', 'r', encoding='utf-8') as f:
     readme = f.read()
