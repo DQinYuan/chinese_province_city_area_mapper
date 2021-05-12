@@ -17,7 +17,7 @@ if __name__ == '__main__':
                     "收货人:xxx, 地址:湖北恩施州建始县业州镇湖北省建始县桂苑小区二单元111-2, 电话:1359",
                     "收货人:木鱼, 地址:浙江嘉兴市海宁市许村镇浙江省海宁市许村镇茗山村徐家石桥1号, 电话:135936",
                     ]
-    df = addressparser.transform(location_str)
+    df = addressparser.transform(location_str, cut=True)
     print(df)
 
     for map_key in zip(df["省"], df["市"], df["区"]):

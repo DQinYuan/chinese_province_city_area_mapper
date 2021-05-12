@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import pandas as pd
+import sys
 
+sys.path.append('..')
 import addressparser
 from addressparser.structures import Pca
 
 
-def assert_addr(addr_df: pd.DataFrame, pos_sensitive=False):
+def assert_addr(addr_df, pos_sensitive=False):
     def _assert_line(linenum, province, city, area, addr,
                      province_pos=-1, city_pos=-1, area_pos=-1):
         assert addr_df.loc[linenum, '省'] == province
@@ -28,15 +29,17 @@ def test_transform():
     addr_list = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "福建省鼓楼区鼓楼医院",
                  "天津市"]
     # 分词模式
-    transed = addressparser.transform(addr_list)
+    transed = addressparser.transform(addr_list, cut=True)
+    print(transed)
     assert_addr(transed)
 
     # 全文匹配
     transed = addressparser.transform(addr_list, cut=False, pos_sensitive=True)
+    print(transed)
     assert_addr(transed)
 
     # 分词匹配 测试pos_sensitive
-    transed = addressparser.transform(addr_list, pos_sensitive=True)
+    transed = addressparser.transform(addr_list, cut=True, pos_sensitive=True)
     print(transed)
     assert_addr(transed, pos_sensitive=True)
 
@@ -53,10 +56,10 @@ def test_data_from_csv():
                   ('北京市', '北京市', '大兴区'), ('北京市', '北京市', '怀柔区'), ('北京市', '北京市', '平谷区'), ('北京市', '北京市', '密云区'),
                   ('北京市', '北京市', '延庆区')]
     assert city_map.get_relational_addrs('北京') == beijin_pca
-    assert latlng[('北京市', '北京市', '东城区')] == ('39.93857401298612', '116.42188470126446')
     assert province_area_map.get_relational_addrs(('北京市', '东城区')) == [('北京市', '北京市', '东城区')]
     assert area_map.get_full_name('东城区') == '东城区'
     assert area_map.get_relational_addrs('东城区') == [('北京市', '北京市', '东城区')]
+    assert latlng[('北京市', '北京市', '东城区')] is not None
 
 
 def test_fill_province():
@@ -107,10 +110,23 @@ def test_jieba_extract3():
     assert pca.area_pos == 10
 
 
+def test_full_text_extract0():
+    """地址在开头"""
+    pca, addr = addressparser._full_text_extract('湖北省武汉武昌区复兴路111号', 8)
+    print(pca, addr)
+    assert addr == '复兴路111号'
+    assert pca.province == '湖北省'
+    assert pca.province_pos == 0
+    assert pca.city == '武汉市'
+    assert pca.city_pos == 3
+    assert pca.area == '武昌区'
+    assert pca.area_pos == 5
+
+
 def test_full_text_extract1():
     """地址在开头"""
     pca, addr = addressparser._full_text_extract('湖北武汉武昌区复兴路111号', 8)
-
+    print(pca, addr)
     assert addr == '复兴路111号'
     assert pca.province == '湖北省'
     assert pca.province_pos == 0
@@ -123,7 +139,7 @@ def test_full_text_extract1():
 def test_full_text_extract2():
     """地址在结尾"""
     pca, addr = addressparser._full_text_extract('我的家在湖北武汉武昌区', 8)
-
+    print(pca, addr)
     assert addr == '我的家在湖北武汉武昌区'
     assert pca.province == '湖北省'
     assert pca.province_pos == 4
@@ -170,6 +186,18 @@ def test_full_text_extract5():
     assert pca.city_pos == 2
     assert pca.area == '武昌区'
     assert pca.area_pos == 4
+
+
+def test_full_text_extract6():
+    """地址在开头 4级地址测试"""
+    pca, addr = addressparser._full_text_extract('泉州市洛江区万安塘西工业区', 8)
+    print(pca, addr)
+    assert addr == '万安塘西工业区'
+    assert pca.province_pos == -1
+    assert pca.city == '泉州市'
+    assert pca.city_pos == 0
+    assert pca.area == '洛江区'
+    assert pca.area_pos == 3
 
 
 def test_handle_one_record1():

@@ -11,7 +11,7 @@ class AddrMap(defaultdict):
     """封装 '地名' -> [[相关地址列表], 地名全名]   这种映射结构"""
 
     def __init__(self):
-        super().__init__(lambda: [[], None])
+        super(AddrMap, self).__init__(lambda: [[], None])
 
     def get_full_name(self, key):
         return self[key][1]

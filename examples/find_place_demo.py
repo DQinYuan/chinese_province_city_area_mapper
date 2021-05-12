@@ -3,11 +3,13 @@
 @author:XuMing（xuming624@qq.com)
 @description: 
 """
+import sys
+
+sys.path.append('..')
+from addressparser import latlng
 
 if __name__ == '__main__':
     # 查询经纬度信息
-    from addressparser import latlng
-
     a = latlng[('北京市', '北京市', '朝阳区')]
     # 输出('39.95895316640668', '116.52169489108084')
     print(a)

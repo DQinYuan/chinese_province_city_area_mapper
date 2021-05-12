@@ -1,21 +1,45 @@
 # -*- coding: utf-8 -*-
 # __init__.py
 import os
-from collections.abc import Iterable
 
+import six
+
+try:
+    from collections.abc import Iterable
+except ImportError:
+    from collections import Iterable
 import pandas as pd
 
 from .structures import AddrMap, Pca
 from .structures import P, C, A
 
-__version__ = "0.1.9"
+__version__ = "0.2.0"
 
 pwd_path = os.path.abspath(os.path.dirname(__file__))
 # 区划地址文件
 pca_path = os.path.join(pwd_path, 'pca.csv')
 
+if six.PY2:
+    text_type = unicode
+else:
+    text_type = str
 
-def _data_from_csv() -> (AddrMap, AddrMap, AddrMap, dict, dict):
+
+def convert_to_unicode(text):
+    """Converts `text` to Unicode (if it's not already), assuming utf-8 input."""
+    if not isinstance(text, text_type):
+        try:
+            text = text.decode('utf-8')
+        except UnicodeDecodeError:
+            text = text.decode('gbk', 'ignore')
+    return text
+
+
+def _data_from_csv():
+    """
+    从csv文件获取数据
+    :return: (AddrMap, AddrMap, AddrMap, dict, dict)
+    """
     # 区名及其简写 -> 相关pca元组
     area_map = AddrMap()
     # 城市名及其简写 -> 相关pca元组
@@ -28,105 +52,115 @@ def _data_from_csv() -> (AddrMap, AddrMap, AddrMap, dict, dict):
     latlng = {}
     # 数据约定:国家直辖市的sheng字段为直辖市名称, 省直辖县的city字段为空
 
-    with open(pca_path, encoding='utf-8')as f:
-        import csv
-        pca_csv = csv.DictReader(f)
-        for record_dict in pca_csv:
-            latlng[(record_dict['sheng'], record_dict['shi'], record_dict['qu'])] = \
-                (record_dict['lat'], record_dict['lng'])
+    # with open(pca_path, 'r', encoding='utf-8') as f:
+    # import csv
+    # pca_csv = csv.DictReader(f)
+    pca_csv = pd.read_csv(pca_path, sep=',', header=0, encoding='utf-8')
+    pca_csv = pca_csv.fillna('')
+    for record_dict in pca_csv.values:
+        # latlng[(record_dict['sheng'], record_dict['shi'], record_dict['qu'])] =
+        # (record_dict['lat'], record_dict['lng'])
+        record_dict = [convert_to_unicode(i) if i is isinstance(i, text_type) else i for i in record_dict]
+        latlng[(record_dict[1], record_dict[2], record_dict[3])] = (record_dict[4], record_dict[5])
 
-            _fill_province_map(province_map, record_dict)
-            _fill_area_map(area_map, record_dict)
-            _fill_city_map(city_map, record_dict)
-            _fill_province_area_map(province_area_map, record_dict)
+        _fill_province_map(province_map, record_dict)
+        _fill_area_map(area_map, record_dict)
+        _fill_city_map(city_map, record_dict)
+        _fill_province_area_map(province_area_map, record_dict)
 
     return area_map, city_map, province_area_map, province_map, latlng
 
 
-def _fill_province_area_map(province_area_map: AddrMap, record_dict):
-    pca_tuple = (record_dict['sheng'], record_dict['shi'], record_dict['qu'])
-    key = (record_dict['sheng'], record_dict['qu'])
+def _fill_province_area_map(province_area_map, record_dict):
+    """
+    填充省，区
+    :param province_area_map: AddrMap
+    :param record_dict:
+    :return:
+    """
+    pca_tuple = (record_dict[1], record_dict[2], record_dict[3])
+    key = (record_dict[1], record_dict[3])
     # 第三个参数在此处没有意义
     province_area_map.append_relational_addr(key, pca_tuple, P)
 
 
 # 过滤混淆区名 '河北北戴河富丽小区1号'
-filter_area_names = ['河北区', '新城区']
+filter_area_names = [u'河北区', u'新城区']
 # 处理了部分常见自治县简写
 short_area_names = {
-    '白沙黎族自治县': '白沙县',
-    '昌江黎族自治县': '昌江县',
-    '乐东黎族自治县': '乐东县',
-    '陵水黎族自治县': '陵水县',
-    '保亭黎族苗族自治县': '保亭县',
-    '琼中黎族苗族自治县': '琼中县',
-    '长阳土家族自治县': '长阳县',
-    '五峰土家族自治县': '五峰县',
-    '大通回族土族自治县': '大通县',
-    '民和回族土族自治县': '民和县',
-    '互助土族自治县': '互助县',
-    '化隆回族自治县': '化隆县',
-    '循化撒拉族自治县': '循化县',
-    '青龙满族自治县': '青龙县',
-    '屏边苗族自治县': '屏边县',
-    '金平苗族瑶族傣族自治县': '金平县',
-    '河口瑶族自治县': '河口县',
-    '丰宁满族自治县': '丰宁县',
-    '宽城满族自治县': '宽城县',
-    '围场满族蒙古族自治县': '围场县',
+    u'白沙黎族自治县': u'白沙县',
+    u'昌江黎族自治县': u'昌江县',
+    u'乐东黎族自治县': u'乐东县',
+    u'陵水黎族自治县': u'陵水县',
+    u'保亭黎族苗族自治县': u'保亭县',
+    u'琼中黎族苗族自治县': u'琼中县',
+    u'长阳土家族自治县': u'长阳县',
+    u'五峰土家族自治县': u'五峰县',
+    u'大通回族土族自治县': u'大通县',
+    u'民和回族土族自治县': u'民和县',
+    u'互助土族自治县': u'互助县',
+    u'化隆回族自治县': u'化隆县',
+    u'循化撒拉族自治县': u'循化县',
+    u'青龙满族自治县': u'青龙县',
+    u'屏边苗族自治县': u'屏边县',
+    u'金平苗族瑶族傣族自治县': u'金平县',
+    u'河口瑶族自治县': u'河口县',
+    u'丰宁满族自治县': u'丰宁县',
+    u'宽城满族自治县': u'宽城县',
+    u'围场满族蒙古族自治县': u'围场县',
 }
 
 
-def _fill_area_map(area_map: AddrMap, record_dict):
+def _fill_area_map(area_map, record_dict):
     """
     填充三级区划（区级）地名，包括简称
-    :param area_map: dict
+    :param area_map:  AddrMap, dict
     :param record_dict: dict
     :return: area_map
     """
-    area_name = record_dict['qu']
-    pca_tuple = (record_dict['sheng'], record_dict['shi'], record_dict['qu'])
+    area_name = record_dict[3]
+    pca_tuple = (record_dict[1], record_dict[2], record_dict[3])
     area_map.append_relational_addr(area_name, pca_tuple, A)
     # 自治县区划简称
     if area_name in short_area_names.keys():
         area_map.append_relational_addr(short_area_names[area_name], pca_tuple, A)
     # 4字区划简称
-    elif len(area_name) > 3 and (area_name.endswith('新区') or area_name.endswith('城区') or area_name.endswith('林区')):
+    elif len(area_name) > 3 and (area_name.endswith(u'新区') or area_name.endswith(u'城区') or area_name.endswith(u'林区')):
         area_map.append_relational_addr(area_name[:-2], pca_tuple, A)
     # 过滤的区划名称
     elif area_name in filter_area_names:
         pass
     # 3字区划简称，'XX区'不简写
-    elif len(area_name) > 2 and (area_name.endswith('市') or area_name.endswith('县')):
+    elif len(area_name) > 2 and (area_name.endswith(u'市') or area_name.endswith(u'县')):
         area_map.append_relational_addr(area_name[:-1], pca_tuple, A)
 
 
 # 过滤混淆市名 eg '吉林省、吉林市的混淆'
-filter_city_names = ['吉林市']
+filter_city_names = [u'吉林市']
 
 
-def _fill_city_map(city_map: AddrMap, record_dict):
+def _fill_city_map(city_map, record_dict):
     """
     填充二级区划（市级）地名，包括简称
-    :param city_map: dict
+    :param city_map: AddrMap, dict
     :param record_dict: dict
     :return: city_map
     """
-    city_name = record_dict['shi']
-    pca_tuple = (record_dict['sheng'], record_dict['shi'], record_dict['qu'])
+    city_name = record_dict[2]  # shi
+    pca_tuple = (record_dict[1], record_dict[2], record_dict[3])
     city_map.append_relational_addr(city_name, pca_tuple, C)
     # fix 吉林省、吉林市的混淆
     if city_name in filter_city_names:
         pass
-    elif city_name.endswith('市'):
+    elif city_name.endswith(u'市'):
         city_map.append_relational_addr(city_name[:-1], pca_tuple, C)
     # 特别行政区
-    elif city_name == '香港特别行政区':
-        city_map.append_relational_addr('香港', pca_tuple, C)
-    elif city_name == '澳门特别行政区':
-        city_map.append_relational_addr('澳门', pca_tuple, C)
+    elif city_name == u'香港特别行政区':
+        city_map.append_relational_addr(u'香港', pca_tuple, C)
+    elif city_name == u'澳门特别行政区':
+        city_map.append_relational_addr(u'澳门', pca_tuple, C)
     # 自治区下的二级区划，eg喀什地区
-    elif len(city_name) > 3 and city_name.endswith('地区'):
+    elif len(city_name) > 3 and city_name.endswith(u'地区'):
         city_map.append_relational_addr(city_name[:-2], pca_tuple, C)
 
 
@@ -137,36 +171,36 @@ def _fill_province_map(province_map, record_dict):
     :param record_dict: dict
     :return: province_map
     """
-    sheng = record_dict['sheng']
+    sheng = record_dict[1]  # sheng
     if sheng not in province_map:
         province_map[sheng] = sheng
         # 处理省的简写情况
         # 普通省分 和 直辖市
-        if sheng.endswith('省') or sheng.endswith('市'):
+        if sheng.endswith(u'省') or sheng.endswith(u'市'):
             province_map[sheng[:-1]] = sheng
         # 自治区
-        elif sheng == '新疆维吾尔自治区':
-            province_map['新疆'] = sheng
-        elif sheng == '内蒙古自治区':
+        elif sheng == u'新疆维吾尔自治区':
+            province_map[u'新疆'] = sheng
+        elif sheng == u'内蒙古自治区':
             province_map['内蒙古'] = sheng
-        elif sheng == '广西壮族自治区':
-            province_map['广西'] = sheng
-            province_map['广西省'] = sheng
-        elif sheng == '西藏自治区':
-            province_map['西藏'] = sheng
-        elif sheng == '宁夏回族自治区':
-            province_map['宁夏'] = sheng
+        elif sheng == u'广西壮族自治区':
+            province_map[u'广西'] = sheng
+            province_map[u'广西省'] = sheng
+        elif sheng == u'西藏自治区':
+            province_map[u'西藏'] = sheng
+        elif sheng == u'宁夏回族自治区':
+            province_map[u'宁夏'] = sheng
         # 特别行政区
-        elif sheng == '香港特别行政区':
-            province_map['香港'] = sheng
-        elif sheng == '澳门特别行政区':
-            province_map['澳门'] = sheng
+        elif sheng == u'香港特别行政区':
+            province_map[u'香港'] = sheng
+        elif sheng == u'澳门特别行政区':
+            province_map[u'澳门'] = sheng
 
 
 area_map, city_map, province_area_map, province_map, latlng = _data_from_csv()
 
 # 直辖市
-munis = {'北京市', '天津市', '上海市', '重庆市'}
+munis = {u'北京市', u'天津市', u'上海市', u'重庆市'}
 
 
 def is_munis(city_full_name):
@@ -175,17 +209,17 @@ def is_munis(city_full_name):
 
 # 区级到市级的映射
 myumap = {
-    '南关区': '长春市',
-    '南山区': '深圳市',
-    '宝山区': '上海市',
-    '普陀区': '上海市',
-    '浦东区': '上海市',
-    '市辖区': '东莞市',
-    '朝阳区': '北京市',
-    '河东区': '天津市',
-    '白云区': '广州市',
-    '西湖区': '杭州市',
-    '铁西区': '沈阳市'
+    u'南关区': u'长春市',
+    u'南山区': u'深圳市',
+    u'宝山区': u'上海市',
+    u'普陀区': u'上海市',
+    u'浦东区': u'上海市',
+    u'市辖区': u'东莞市',
+    u'朝阳区': u'北京市',
+    u'河东区': u'天津市',
+    u'白云区': u'广州市',
+    u'西湖区': u'杭州市',
+    u'铁西区': u'沈阳市'
 }
 
 
@@ -227,9 +261,9 @@ def transform(location_strs, umap=myumap, index=[], cut=False, lookahead=8, pos_
 
 def _handle_one_record(addr, umap, cut, lookahead, pos_sensitive, open_warning):
     """处理一条记录"""
-
+    addr = convert_to_unicode(addr)
     # 空记录
-    if not isinstance(addr, str) or addr == '' or addr is None:
+    if not addr or not isinstance(addr, text_type):
         empty = {'省': '', '市': '', '区': ''}
         if pos_sensitive:
             empty['省_pos'] = -1
@@ -245,7 +279,7 @@ def _handle_one_record(addr, umap, cut, lookahead, pos_sensitive, open_warning):
     _fill_province(pca)
 
     result = pca.propertys_dict(pos_sensitive)
-    result["地名"] = left_addr
+    result['地名'] = left_addr
     return result
 
 
@@ -296,7 +330,7 @@ def _jieba_extract(addr):
     import jieba
     result = Pca()
     pos = 0
-    truncate = 0
+    truncate = {0: 0}
 
     def _set_pca(pca_property, name, full_name):
         """pca_property: 'province', 'city' or 'area'"""
@@ -305,9 +339,10 @@ def _jieba_extract(addr):
             setattr(result, pca_property + "_pos", pos)
             if is_munis(full_name):
                 setattr(result, "province_pos", pos)
-            nonlocal truncate
-            if pos == truncate:
-                truncate += len(name)
+            # nonlocal truncate, replace with dict
+            # refer: https://www.it610.com/article/50433.htm
+            if pos == truncate[0]:
+                truncate[0] += len(name)
 
     for word in jieba.cut(addr):
         # 优先提取低级别行政区 (主要是为直辖市和特别行政区考虑)
@@ -320,16 +355,16 @@ def _jieba_extract(addr):
 
         pos += len(word)
 
-    return result, addr[truncate:]
+    return result, addr[truncate[0]:]
 
 
-filter_address_chars = ['路', '街', '村', '桥']
+filter_address_chars = [u'路', u'街', u'村', u'桥']
 
 
 def _full_text_extract(addr, lookahead):
     """全文匹配进行提取"""
     result = Pca()
-    truncate = 0
+    truncate = {0: 0}
 
     def _set_pca(pca_property, pos, name, full_name):
         """pca_property: 'province', 'city' or 'area'"""
@@ -340,9 +375,9 @@ def _full_text_extract(addr, lookahead):
                 setattr(result, pca_property + "_pos", pos)
                 if is_munis(full_name):
                     setattr(result, "province_pos", pos)
-                nonlocal truncate
-                if pos == truncate:
-                    truncate += len(name)
+                # nonlocal truncate
+                if pos == truncate[0]:
+                    truncate[0] += len(name)
             return len(name)
 
         return _defer_set
@@ -352,7 +387,7 @@ def _full_text_extract(addr, lookahead):
     while i < len(addr):
         # 用于设置pca属性的函数
         defer_fun = None
-        # l为从起始位置开始的长度,从中提取出最长的地址
+        # length为从起始位置开始的长度,从中提取出最长的地址
         for length in range(1, lookahead + 1):
             end_pos = i + length
             if end_pos > len(addr):
@@ -378,4 +413,4 @@ def _full_text_extract(addr, lookahead):
         else:
             i += 1
 
-    return result, addr[truncate:]
+    return result, addr[truncate[0]:]
