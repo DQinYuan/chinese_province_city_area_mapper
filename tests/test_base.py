@@ -26,6 +26,7 @@ def assert_addr(addr_df, pos_sensitive=False):
 
 
 def test_transform():
+    """分词、全文测试"""
     addr_list = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "福建省鼓楼区鼓楼医院",
                  "天津市"]
     # 分词模式
@@ -45,6 +46,7 @@ def test_transform():
 
 
 def test_data_from_csv():
+    """测试数据加载"""
     area_map, city_map, province_area_map, province_map, latlng = addressparser._data_from_csv()
     print("....")
     assert province_map['北京'] == '北京市'
