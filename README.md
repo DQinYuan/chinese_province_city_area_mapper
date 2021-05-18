@@ -20,7 +20,7 @@
     |上海市|上海市|徐汇区|虹漕路461号58号楼5楼  |
     |福建省|泉州市|洛江区|万安塘西工业区        |
 
-> 注：“地址”列代表去除了省市区之后的具体地址
+> 注：“地名”列代表去除了省市区之后的具体地名
 
 
 ## Data
@@ -47,6 +47,9 @@ python3 setup.py install
 ## Usage
 
 - 省市区提取
+
+示例[base_demo.py](examples/base_demo.py)
+
 ```python
 
 location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
@@ -69,6 +72,8 @@ output:
 
 - 带位置索引的省市县提取
 
+示例[pos_sensitive_demo.py](examples/pos_sensitive_demo.py)
+
 ```python
 location_str = ["徐汇区虹漕路461号58号楼5楼", "泉州市洛江区万安塘西工业区", "朝阳区北苑华贸城"]
 import addressparser
@@ -89,6 +94,8 @@ output:
 - 切词模式的省市区提取
 
 默认采用全文模式，不进行分词，直接全文匹配，这样速度慢，准确率高。
+
+示例[enable_cut_demo.py](examples/enable_cut_demo.py)
 
 ```python
 location_str = ["浙江省杭州市下城区青云街40号3楼"]
@@ -143,6 +150,8 @@ output:
 
 - 地址经纬度、省市县级联关系查询
 
+示例[find_place_demo.py](examples/find_place_demo.py)
+
 ```python
 ## 查询经纬度信息
 from addressparser import latlng
@@ -168,7 +177,10 @@ pip install echarts-countries-pypkg
 pip install pyecharts-snapshot
 ```
 
-使用本仓库提供的一万多条地址数据[tests/addr.csv](./tests/addr.csv)测试：
+使用本仓库提供的一万多条地址数据[tests/addr.csv](./tests/addr.csv)测试。
+
+示例[draw_demo.py](examples/draw_demo.py)
+
 ```python
 #读取数据
 import pandas as pd
@@ -198,6 +210,8 @@ output:
 
 样本分类绘制函数，通过额外传入一个样本的分类信息，能够在地图上以不同的颜色画出属于不同分类的样本散点图，以下代码以“省”作为类别信息绘制分类散点图（可以看到，属于不同省的样本被以不同的颜色标记了出来，这里以“省”作为分类标准只是举个例子，实际应用中可以选取更加有实际意义的分类指标）：
 
+示例[draw_demo.py](examples/draw_demo.py)
+
 ```python
 from addressparser import drawer
 drawer.echarts_cate_draw(processed, processed["省"], "echarts_cate.html")
@@ -211,6 +225,9 @@ drawer.echarts_cate_draw(processed, processed["省"], "echarts_cate.html")
 - 命令行模式
 
 支持批量提取地址的省市区信息：
+
+示例[cmd_demo.py](examples/cmd_demo.py)
+
 ```
 python3 -m addressparser address_input.csv -o out.csv
 
