@@ -32,6 +32,9 @@ def convert_to_unicode(text):
             text = text.decode('utf-8')
         except UnicodeDecodeError:
             text = text.decode('gbk', 'ignore')
+        except Exception as e:
+            import warnings
+            warnings.warn('Convert to unicode error: %s, text: %s' % (e, text))
     return text
 
 

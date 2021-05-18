@@ -1,5 +1,13 @@
 # addressparser
-中文地址提取工具，支持中国三级区划地址（省、市、区）提取和级联映射，支持地址目的地热力图绘制。python3开发。
+[![PyPI version](https://badge.fury.io/py/addressparser.svg)](https://badge.fury.io/py/addressparser)
+[![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![MIT](https://img.shields.io/badge/MIT-blue.svg)](LICENSE)
+![Language](https://img.shields.io/badge/Language-Python-blue.svg)
+![Python3](https://img.shields.io/badge/Python-3.X-red.svg)
+![Python2.7](https://img.shields.io/badge/Python-2.7-red.svg)
+
+
+中文地址提取工具，支持中国三级区划地址（省、市、区）提取和级联映射，支持地址目的地热力图绘制。适配python2和python3。
 
 
 ## Feature
@@ -25,7 +33,7 @@
 
 ## Install
 ```
-pip3 install addressparser
+pip install addressparser
 ```
 
 or
