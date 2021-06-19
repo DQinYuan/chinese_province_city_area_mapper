@@ -23,13 +23,15 @@
 > 注：“地名”列代表去除了省市区之后的具体地名
 
 
-## Data
-#### 中国三级行政区划分
+#### 数据集：中国行政区划地名
 
 数据源：爬取自[国家统计局](http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/)，[中华人民共和国民政局全国行政区划查询平台](http://xzqh.mca.gov.cn/map)
 
 数据文件存储在：[addressparser/resources/pca.csv](./addressparser/resources/pca.csv)，数据为2019年2月20日在官网上爬取的最新权威数据
 
+## Demo
+
+http://42.193.145.218/product/address_extraction/
 
 ## Install
 ```
