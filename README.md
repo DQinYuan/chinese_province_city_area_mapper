@@ -27,7 +27,7 @@
 
 数据源：爬取自[国家统计局](http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/)，[中华人民共和国民政局全国行政区划查询平台](http://xzqh.mca.gov.cn/map)
 
-数据文件存储在：[addressparser/resources/pca.csv](./addressparser/resources/pca.csv)，数据为2019年2月20日在官网上爬取的最新权威数据
+数据文件存储在：[addressparser/resources/pca.csv](./addressparser/resources/pca.csv)，数据为2020年11月6日在统计局官网上爬取的最新权威数据
 
 ## Demo
 
