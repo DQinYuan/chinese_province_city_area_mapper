@@ -211,8 +211,7 @@ output:
 
 样本分类绘制函数，通过额外传入一个样本的分类信息，能够在地图上以不同的颜色画出属于不同分类的样本散点图，以下代码以“省”作为类别信息绘制分类散点图（可以看到，属于不同省的样本被以不同的颜色标记了出来，这里以“省”作为分类标准只是举个例子，实际应用中可以选取更加有实际意义的分类指标）：
 
-示例[draw_demo.py](examples/draw_demo.py)
-
+示例[draw_demo.py](examples/draw_demo.py)，接上面示例代码：
 ```python
 from addressparser import drawer
 drawer.echarts_cate_draw(processed, processed["省"], "echarts_cate.html")
