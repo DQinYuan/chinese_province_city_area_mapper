@@ -211,8 +211,7 @@ output:
 
 样本分类绘制函数，通过额外传入一个样本的分类信息，能够在地图上以不同的颜色画出属于不同分类的样本散点图，以下代码以“省”作为类别信息绘制分类散点图（可以看到，属于不同省的样本被以不同的颜色标记了出来，这里以“省”作为分类标准只是举个例子，实际应用中可以选取更加有实际意义的分类指标）：
 
-示例[draw_demo.py](examples/draw_demo.py)
-
+示例[draw_demo.py](examples/draw_demo.py)，接上面示例代码：
 ```python
 from addressparser import drawer
 drawer.echarts_cate_draw(processed, processed["省"], "echarts_cate.html")
@@ -245,7 +244,7 @@ optional arguments:
   -c, --cut             use cut mode.
 
 ```
-> 输入文件：`address_input.csv`；输出文件：`out.csv`，省市县地址以`\t`间隔
+> 输入文件：`address_input.csv`；输出文件：`out.csv`，省市县地址以`\t`间隔，`-c`表示使用切词
 
 
 ## Todo
@@ -253,7 +252,6 @@ optional arguments:
 - [x] 增加定期从民政局官网，统计局官网爬取最新省市县镇村划分的功能，延后，原因是2018年后官网未更新
 - [x] 解决路名被误识别为省市名的问题，eg"天津空港经济区环河北路80号空港商务园"
 - [ ] 添加省市区提取后的级联校验逻辑
-
 
 ## Contribute
 
