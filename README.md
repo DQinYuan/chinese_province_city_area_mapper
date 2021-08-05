@@ -30,7 +30,6 @@
 数据文件存储在：[addressparser/resources/pca.csv](./addressparser/resources/pca.csv)，数据为2020年11月6日在统计局官网上爬取的最新权威数据
 
 ## Demo
-
 http://42.193.145.218/product/address_extraction/
 
 ## Install
