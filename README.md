@@ -251,16 +251,49 @@ optional arguments:
 - [x] 解决路名被误识别为省市名的问题，eg"天津空港经济区环河北路80号空港商务园"
 - [ ] 添加省市区提取后的级联校验逻辑
 - [ ] 大批量地址数据，准召率效果评估
+# Contact
+
+- Issue(建议)：[![GitHub issues](https://img.shields.io/github/issues/shibing624/text2vec.svg)](https://github.com/shibing624/text2vec/issues)
+- 邮件我：xuming: xuming624@qq.com
+- 微信我：
+加我*微信号：xuming624, 备注：个人名称-公司-NLP* 进NLP交流群。
+
+<img src="docs/wechat.jpeg" width="200" />
+
+
+## Citation
+
+如果你在研究中使用了**addressparser**，请按如下格式引用：
+
+APA:
+```latex
+Xu, M. Addressparser: Chinese address parser toolkit (Version 0.2.2) [Computer software]. https://github.com/shibing624/addressparser
+```
+
+BibTeX:
+```latex
+@software{Xu_Addressparser_Chinese_address,
+author = {Xu, Ming},
+title = {{Addressparser: Chinese address parser toolkit}},
+url = {https://github.com/shibing624/addressparser},
+version = {0.2.2}
+}
+```
+
+## License
+
+
+授权协议为 [The Apache License 2.0](/LICENSE)，可免费用做商业用途。请在产品说明中附加addressparser的链接和授权协议。
+
 
 ## Contribute
-
-项目代码还很粗糙，如果大家对代码有所改进，欢迎提交回本项目
-，在提交之前，注意以下两点：
+项目代码还很粗糙，如果大家对代码有所改进，欢迎提交回本项目，在提交之前，注意以下两点：
 
  - 在`tests`添加相应的单元测试
  - 使用`python setup.py test`来运行所有单元测试，确保所有单测都是通过的
 
 之后即可提交PR。
+
 
 ## Reference
 
