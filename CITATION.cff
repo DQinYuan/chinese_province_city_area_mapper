@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Xu"
+  given-names: "Ming"
+title: "Addressparser: Chinese address parser toolkit"
+url: "https://github.com/shibing624/addressparser"
+data-released: 2021
+version: 0.2.2
