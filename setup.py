@@ -14,12 +14,6 @@ here = os.path.abspath(os.path.dirname(__file__))
 with open('README.md', 'r', encoding='utf-8') as f:
     readme = f.read()
 
-with open('LICENSE', 'r', encoding='utf-8') as f:
-    license = f.read()
-
-with open('requirements.txt', 'r', encoding='utf-8') as f:
-    reqs = f.read()
-
 setup(
     name='addressparser',
     version=addressparser.__version__,
@@ -43,11 +37,14 @@ setup(
         'Topic :: Text Processing :: Linguistic',
     ],
     keywords='NLP,Simplified Chinese,Chinese geographic information',
-    install_requires=reqs.strip().split('\n'),
+    install_requires=[
+        "jieba",
+        "pandas",
+    ],
     packages=find_packages(exclude=['tests']),
     package_dir={'addressparser': 'addressparser'},
     package_data={
-        'addressparser': ['*.*', '../LICENSE', '../*.txt', '../README.*'],
+        'addressparser': ['*.*'],
     },
     test_suite='tests',
 )

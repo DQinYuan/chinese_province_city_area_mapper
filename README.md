@@ -172,7 +172,7 @@ province_area_map.get_relational_addrs(('江苏省', '鼓楼区')) # [('江苏�
 使用echarts的热力图绘图函数之前需要先用如下命令安装它的依赖（为了减少本模块的体积，所以这些依赖不会被自动安装）：
 
 ```
-pip install pyecharts
+pip install pyecharts==0.5.11
 pip install echarts-countries-pypkg
 pip install pyecharts-snapshot
 ```

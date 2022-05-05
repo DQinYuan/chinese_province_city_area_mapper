@@ -34,7 +34,10 @@ def draw_locations(locations, file_path):
     for map_key in zip(locations["省"], locations["市"], locations["区"]):
         if latlng.get(map_key):
             lat_lon = latlng.get(map_key)
-            heatData.append([float(lat_lon[0]), float(lat_lon[1]), 1])
+            if lat_lon[0] and lat_lon[1]:
+                heatData.append([float(lat_lon[0]), float(lat_lon[1]), 1])
+            else:
+                print('no latlng:', map_key, lat_lon)
     # 绘制Map，开始缩放程度是5倍
     map_osm = folium.Map(location=[35, 110], zoom_start=5)
     # 将热力图添加到前面建立的map里
