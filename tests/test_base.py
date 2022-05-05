@@ -57,7 +57,7 @@ def test_data_from_csv():
                   ('北京市', '北京市', '房山区'), ('北京市', '北京市', '通州区'), ('北京市', '北京市', '顺义区'), ('北京市', '北京市', '昌平区'),
                   ('北京市', '北京市', '大兴区'), ('北京市', '北京市', '怀柔区'), ('北京市', '北京市', '平谷区'), ('北京市', '北京市', '密云区'),
                   ('北京市', '北京市', '延庆区')]
-    assert city_map.get_relational_addrs('北京') == beijin_pca
+    assert set(city_map.get_relational_addrs('北京')) == set(beijin_pca)
     assert province_area_map.get_relational_addrs(('北京市', '东城区')) == [('北京市', '北京市', '东城区')]
     assert area_map.get_full_name('东城区') == '东城区'
     assert area_map.get_relational_addrs('东城区') == [('北京市', '北京市', '东城区')]

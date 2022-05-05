@@ -68,3 +68,6 @@ def test_cut_custom_dict():
     for i in location_str:
         o = jieba.lcut(i)
         print(i, o)
+    assert jieba.lcut("上海市浦东新区东方路1365号5号楼24B") == ['上海市', '浦东新区', '东方路', '1365', '号', '5', '号楼', '24B']
+    assert jieba.lcut("湖北武汉复兴路111号") == ['湖北', '武汉', '复兴路', '111', '号']
+    assert jieba.lcut("秦皇岛市北戴河融合小区11号") == ['秦皇岛市', '北戴河', '融合小区', '11', '号']
