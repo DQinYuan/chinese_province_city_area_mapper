@@ -1,22 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-
-import os
 from codecs import open
-
 from setuptools import setup, find_packages
 
-import addressparser
-
-here = os.path.abspath(os.path.dirname(__file__))
 
 with open('README.md', 'r', encoding='utf-8') as f:
     readme = f.read()
 
 setup(
     name='addressparser',
-    version=addressparser.__version__,
+    version="0.2.3",
     description='Chinese Address Parser and Extraction Tool,Chinese Province, City and Area Recognition Utilities',
     long_description=readme,
     long_description_content_type='text/markdown',
