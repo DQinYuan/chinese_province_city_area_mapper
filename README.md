@@ -1,10 +1,11 @@
 # addressparser
 [![PyPI version](https://badge.fury.io/py/addressparser.svg)](https://badge.fury.io/py/addressparser)
-[![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Downloads](https://pepy.tech/badge/addressparser)](https://pepy.tech/project/addressparser)
 [![MIT](https://img.shields.io/badge/MIT-blue.svg)](LICENSE)
-![Language](https://img.shields.io/badge/Language-Python-blue.svg)
-![Python3](https://img.shields.io/badge/Python-3.X-red.svg)
+![Python3](https://img.shields.io/badge/Python-3.6-red.svg)
 ![Python2.7](https://img.shields.io/badge/Python-2.7-red.svg)
+[![GitHub issues](https://img.shields.io/github/issues/shibing624/addressparser.svg)](https://github.com/shibing624/addressparser/issues)
+[![Wechat Group](http://vlog.sfyc.ltd/wechat_everyday/wxgroup_logo.png?imageView2/0/w/60/h/20)](#Contact)
 
 
 中文地址提取工具，支持中国三级区划地址（省、市、区）提取和级联映射，支持地址目的地热力图绘制。适配python2和python3。
@@ -27,7 +28,7 @@
 
 数据源：爬取自[国家统计局](http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/)，[中华人民共和国民政局全国行政区划查询平台](http://xzqh.mca.gov.cn/map)
 
-数据文件存储在：[addressparser/resources/pca.csv](./addressparser/resources/pca.csv)，数据为2020年11月6日在统计局官网上爬取的最新权威数据
+数据文件存储在：[addressparser/resources/pca.csv](./addressparser/resources/pca.csv)，数据为[2021年统计用区划代码和城乡划分代码（截止时间：2021-10-31，发布时间：2021-12-30）](http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2021/index.html)
 
 ## Demo
 http://42.193.145.218/product/address_extraction/
@@ -249,8 +250,11 @@ optional arguments:
 - [x] bug修复，吉林省、广西省部分地址和上海浦东新区等三级区划地址匹配错误
 - [x] 增加定期从民政局官网，统计局官网爬取最新省市县镇村划分的功能，延后，原因是2018年后官网未更新
 - [x] 解决路名被误识别为省市名的问题，eg"天津空港经济区环河北路80号空港商务园"
-- [ ] 添加省市区提取后的级联校验逻辑
-- [ ] 大批量地址数据，准召率效果评估
+- [x] 添加省市区提取后的级联校验逻辑
+- [x] 大批量地址数据，准召率效果评估
+- [x] 补充香港、澳门、台湾三级区划地址信息
+
+
 # Contact
 
 - Issue(建议)：[![GitHub issues](https://img.shields.io/github/issues/shibing624/text2vec.svg)](https://github.com/shibing624/text2vec/issues)
@@ -267,7 +271,7 @@ optional arguments:
 
 APA:
 ```latex
-Xu, M. Addressparser: Chinese address parser toolkit (Version 0.2.2) [Computer software]. https://github.com/shibing624/addressparser
+Xu, M. Addressparser: Chinese address parser toolkit (Version 0.2.4) [Computer software]. https://github.com/shibing624/addressparser
 ```
 
 BibTeX:
@@ -276,7 +280,7 @@ BibTeX:
 author = {Xu, Ming},
 title = {{Addressparser: Chinese address parser toolkit}},
 url = {https://github.com/shibing624/addressparser},
-version = {0.2.2}
+version = {0.2.4}
 }
 ```
 
@@ -290,7 +294,7 @@ version = {0.2.2}
 项目代码还很粗糙，如果大家对代码有所改进，欢迎提交回本项目，在提交之前，注意以下两点：
 
  - 在`tests`添加相应的单元测试
- - 使用`python setup.py test`来运行所有单元测试，确保所有单测都是通过的
+ - 使用`python pytest`来运行所有单元测试，确保所有单测都是通过的
 
 之后即可提交PR。
 

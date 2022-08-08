@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
-# __init__.py
+"""
+@author:XuMing（xuming624@qq.com)
+@description:
+"""
+
 import os
-
 import six
-
+import warnings
 try:
     from collections.abc import Iterable
 except ImportError:
@@ -13,7 +16,7 @@ import pandas as pd
 from .structures import AddrMap, Pca
 from .structures import P, C, A
 
-__version__ = "0.2.3"
+__version__ = "0.2.4"
 
 pwd_path = os.path.abspath(os.path.dirname(__file__))
 # 区划地址文件
@@ -33,7 +36,6 @@ def convert_to_unicode(text):
         except UnicodeDecodeError:
             text = text.decode('gbk', 'ignore')
         except Exception as e:
-            import warnings
             warnings.warn('Convert to unicode error: %s, text: %s' % (e, text))
     return text
 
@@ -155,10 +157,10 @@ def _fill_city_map(city_map, record_dict):
     elif city_name.endswith(u'市'):
         city_map.append_relational_addr(city_name[:-1], pca_tuple, C)
     # 特别行政区
-    elif city_name == u'香港特别行政区':
-        city_map.append_relational_addr(u'香港', pca_tuple, C)
-    elif city_name == u'澳门特别行政区':
-        city_map.append_relational_addr(u'澳门', pca_tuple, C)
+    # elif city_name == u'香港特别行政区':
+    #     city_map.append_relational_addr(u'香港', pca_tuple, C)
+    # elif city_name == u'澳门特别行政区':
+    #     city_map.append_relational_addr(u'澳门', pca_tuple, C)
     # 自治区下的二级区划，eg喀什地区
     elif len(city_name) > 3 and city_name.endswith(u'地区'):
         city_map.append_relational_addr(city_name[:-2], pca_tuple, C)
@@ -219,7 +221,7 @@ myumap = {
     u'河东区': u'天津市',
     u'白云区': u'广州市',
     u'西湖区': u'杭州市',
-    u'铁西区': u'沈阳市'
+    u'铁西区': u'沈阳市',
 }
 
 
@@ -299,8 +301,13 @@ def _fill_city(pca, umap, open_warning):
                 pca.city = umap.get(pca.area)
                 return
             if pca.area in area_map and area_map.is_unique_value(pca.area):
-                pca.city = area_map.get_value(pca.area, C)
-                return
+                if pca.province:
+                    if area_map.get_value(pca.area, P) == pca.province:
+                        pca.city = area_map.get_value(pca.area, C)
+                        return
+                else:
+                    pca.city = area_map.get_value(pca.area, C)
+                    return
 
         # 从 省,区 映射
         if pca.area and pca.province:
@@ -310,8 +317,7 @@ def _fill_city(pca, umap, open_warning):
                 return
 
         if open_warning:
-            import logging
-            logging.warning("%s 无法映射, 建议添加进umap中", pca.area)
+            warnings.warn("%s 无法映射, 建议添加进umap中" % pca.area)
 
 
 def _extract_addr(addr, cut, lookahead):

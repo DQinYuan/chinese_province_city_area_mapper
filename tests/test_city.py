@@ -103,6 +103,7 @@ def test_error_city_jilin():
 def test_error_city_hainan():
     """二级地名出错bug修复"""
     location_str = [
+        "香港九龙观塘区1号楼",
         "河北石家庄市桥西区校区公路11号",
         "海南白沙县金波乡金波乡金眉路2号",
         "海南乐东县九所镇乐东龙栖湾村东侧波波利海岸",
@@ -113,5 +114,5 @@ def test_error_city_hainan():
         "河南宽城县祥和小区22号",
 
     ]
-    df = addressparser.transform(location_str)
+    df = addressparser.transform(location_str, cut=False)
     print(df)

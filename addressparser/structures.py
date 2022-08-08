@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-
+"""
+@author:XuMing（xuming624@qq.com)
+@description:
+"""
 from collections import defaultdict
 
 P = 0

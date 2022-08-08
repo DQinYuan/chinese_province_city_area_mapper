@@ -9,7 +9,7 @@ with open('README.md', 'r', encoding='utf-8') as f:
 
 setup(
     name='addressparser',
-    version="0.2.3",
+    version="0.2.4",
     description='Chinese Address Parser and Extraction Tool,Chinese Province, City and Area Recognition Utilities',
     long_description=readme,
     long_description_content_type='text/markdown',
