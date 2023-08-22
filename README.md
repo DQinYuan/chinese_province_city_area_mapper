@@ -1,6 +1,6 @@
 # addressparser
 [![PyPI version](https://badge.fury.io/py/addressparser.svg)](https://badge.fury.io/py/addressparser)
-[![Downloads](https://pepy.tech/badge/addressparser)](https://pepy.tech/project/addressparser)
+[![Downloads](https://static.pepy.tech/badge/addressparser)](https://pepy.tech/project/addressparser)
 [![MIT](https://img.shields.io/badge/MIT-blue.svg)](LICENSE)
 ![Python3](https://img.shields.io/badge/Python-3.6-red.svg)
 ![Python2.7](https://img.shields.io/badge/Python-2.7-red.svg)
