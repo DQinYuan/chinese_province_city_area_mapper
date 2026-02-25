@@ -235,6 +235,13 @@ def adcode_name(part_adcode: str):
     return None if addr is None else addr.name
 
 
+def full_adcode_name(part_adcode: str, sep: str = "") -> str:
+    res = {}
+    update_res_by_adcode(res, part_adcode)
+    parts = [res.get(_PROVINCE), res.get(_CITY), res.get(_COUNTY)]
+    return sep.join(p for p in parts if p)
+
+
 def update_res_by_adcode(res: dict, adcode: str):
     if adcode.endswith("0000"):
         res[_PROVINCE] = adcode_name(adcode[:2])
