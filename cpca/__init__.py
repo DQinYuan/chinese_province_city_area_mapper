@@ -189,7 +189,7 @@ def _extract_addrs(sentence, pos_sensitive, umap, truncate_pos=True, new_entry_w
         first_adcode = umap.get(match_info.origin_value)
         cur_addr = match_info.get_match_addr(last_info, first_adcode)
         if cur_addr:
-            set_pos(res, match_info.get_rank(), match_info.start_index)
+            set_pos(res, cur_addr.rank, match_info.start_index)
             last_info = cur_addr
             adcode = cur_addr.adcode
             truncate_index = match_info.end_index
@@ -211,7 +211,7 @@ def _extract_addrs(sentence, pos_sensitive, umap, truncate_pos=True, new_entry_w
             yield res
             addr = match_info.get_match_addr(None, first_adcode)
             res = empty_record(pos_sensitive)
-            set_pos(res, match_info.get_rank(), match_info.start_index)
+            set_pos(res, addr.rank, match_info.start_index)
             last_info = addr
             adcode = addr.adcode
             truncate_index = match_info.end_index
